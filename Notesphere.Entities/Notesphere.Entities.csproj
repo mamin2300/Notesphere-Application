@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="DashboardModels\" />
+    <Folder Include="NotesModels\" />
     <Folder Include="SharingModels\" />
     <Folder Include="ProductivityModels\" />
     <Folder Include="PlannerModels\" />

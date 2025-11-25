@@ -9,6 +9,8 @@
   <ItemGroup>
     <Folder Include="DashboardDataAccessLayer\" />
     <Folder Include="DashboardRepository\" />
+    <Folder Include="NotesRepository\" />
+    <Folder Include="NotesDataAccessLayer\" />
     <Folder Include="SharingRepository\" />
     <Folder Include="ProductivityRepository\" />
     <Folder Include="PlannerRepository\" />
