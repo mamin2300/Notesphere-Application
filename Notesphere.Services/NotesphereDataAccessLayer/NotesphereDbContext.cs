@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Notesphere.Entities.NotesModels;
 
-namespace Notesphere.Services.NotesDataAccessLayer
+namespace Notesphere.Services.NotesphereDataAccessLayer
 {
-    public class NotesDbContext : DbContext
+    public class NotesphereDbContext : DbContext
     {
-        public NotesDbContext(DbContextOptions<NotesDbContext> options) : base(options)
+        public NotesphereDbContext(DbContextOptions<NotesphereDbContext> options) : base(options)
         {
         }
 
+        //notes.db sets 
         public DbSet<Note> Notes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<NoteTag> NoteTags { get; set; }
@@ -24,6 +25,10 @@ namespace Notesphere.Services.NotesDataAccessLayer
             modelBuilder.Entity<NoteTag>()
                 .HasKey(nt => new { nt.NoteId, nt.TagId });
         }
+
+        //planner.db sets
+        //sharing.db sets
+        //productivity.db sets
     }
 }
 

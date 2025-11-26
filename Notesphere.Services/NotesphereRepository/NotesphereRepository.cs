@@ -1,17 +1,18 @@
 ﻿using Notesphere.Entities.NotesModels;
-using Notesphere.Services.NotesDataAccessLayer;
+using Notesphere.Services.NotesphereDataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 
 namespace Notesphere.Services.NotesRepository
 {
-    public class NotesRepository : INoteService
+    public class NotesRepository : INotesphereService
     {
-        private readonly NotesDbContext _db;
+        private readonly NotesphereDbContext _db;
 
-        public NotesRepository(NotesDbContext db)
+        public NotesRepository(NotesphereDbContext db)
         {
             _db = db;
         }
+        // Notes CRUD operations
 
         public async Task<List<Note>> GetAllNotes() =>
             await _db.Notes.ToListAsync();
@@ -58,5 +59,9 @@ namespace Notesphere.Services.NotesRepository
             _db.NoteTags.Add(join);
             await _db.SaveChangesAsync();
         }
+
+        //planner CRUD operations
+        //sharing CRUD operations
+        //productivity CRUD operations
     }
 }

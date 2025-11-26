@@ -2,8 +2,9 @@
 
 namespace Notesphere.Services.NotesRepository
 {
-    public interface INoteService
+    public interface INotesphereService
     {
+        // Notes CRUD operations
         Task<List<Note>> GetAllNotes();
         Task<Note?> GetNoteById(int id);
         Task AddNote(Note note);
@@ -14,5 +15,9 @@ namespace Notesphere.Services.NotesRepository
         Task<List<Tag>> GetAllTags();
         Task SaveNoteVersion(NoteVersion Version);
         Task AddTagToNote(NoteTag join);
+
+        //Planner CRUD operations
+        //Sharing CRUD operations
+        //Productivity CRUD operations
     }
 }

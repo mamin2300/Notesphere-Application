@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Notesphere.Services\Notesphere.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

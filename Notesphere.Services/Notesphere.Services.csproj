@@ -7,17 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DashboardDataAccessLayer\" />
-    <Folder Include="DashboardRepository\" />
-    <Folder Include="SharingRepository\" />
-    <Folder Include="ProductivityRepository\" />
-    <Folder Include="PlannerRepository\" />
-    <Folder Include="ProductivityDataAccessLayer\" />
-    <Folder Include="SharingDataAcessLayer\" />
-    <Folder Include="PlannerDataAccessLayer\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.11">

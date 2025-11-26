@@ -8,9 +8,6 @@
 
   <ItemGroup>
     <Folder Include="DashboardModels\" />
-    <Folder Include="SharingModels\" />
-    <Folder Include="ProductivityModels\" />
-    <Folder Include="PlannerModels\" />
   </ItemGroup>
 
 </Project>

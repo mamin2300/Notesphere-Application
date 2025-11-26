@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Notesphere.Services.NotesphereDataAccessLayer;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,8 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+builder.Services.AddDbContext<NotesphereDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
