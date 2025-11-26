@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//Malika's : Showcases Events
+// Author: Malika Muskan (991808527)
+// Description: Event entity class representing a single calendar event in the timetable.
+// This class maps to the Events table in the database.
+
 
 namespace Notesphere.Entities.PlannerModels
 {
-  
+
     public class Event
     {
         // Primary Key
@@ -17,7 +22,7 @@ namespace Notesphere.Entities.PlannerModels
 
         // Foreign Key - links to User who owns this event
         [Required]
-        [StringLength(450)] 
+        [StringLength(450)]
         public string UserId { get; set; }
 
         // Event Details
@@ -63,20 +68,20 @@ namespace Notesphere.Entities.PlannerModels
         public DateTime? ModifiedAt { get; set; }
 
         // Navigation property - link to RecurringEvent
-       // [ForeignKey("RecurrenceId")]
-       // public virtual RecurringEvent RecurringEvent { get; set; }
+         [ForeignKey("RecurrenceId")]
+         public virtual RecurringEvent RecurringEvent { get; set; }
 
-        
-      // Constructor - sets default values
-      public Event()
+
+        // Constructor - sets default values
+        public Event()
         {
             CreatedAt = DateTime.Now;
             IsAllDay = false;
-            ColorCode = "#49111C"; // Default burgundy color 
+            ColorCode = "#49111C"; // burgundy color for color scheme
         }
 
 
-        
+
         // Calculates the duration of the event
         public TimeSpan GetDuration()
         {
@@ -91,16 +96,16 @@ namespace Notesphere.Entities.PlannerModels
                    (StartTime.Date <= date.Date && EndTime.Date >= date.Date);
         }
 
-       
+
         // Checks if this event has a time conflict with another event
-       
+
         public bool HasTimeConflict(Event other)
         {
             // Events conflict if they overlap in time
             return this.StartTime < other.EndTime && this.EndTime > other.StartTime;
         }
 
-        
+
         // Creates a copy of this event (useful for recurring events)
         public Event Clone()
         {
@@ -118,9 +123,23 @@ namespace Notesphere.Entities.PlannerModels
             };
         }
 
-        
+
         // Validates if the event data is correct
         public bool Validate()
-    {
+        {
+            // End time must be after start time
+            if (EndTime <= StartTime)
+                return false;
+
+
+            if (string.IsNullOrWhiteSpace(Title))
+                return false;
+
+            // Color code must be valid hex format
+            if (!ColorCode.StartsWith("#") || ColorCode.Length != 7)
+                return false;
+
+            return true;
+        }
     }
 }
