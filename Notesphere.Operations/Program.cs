@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Notesphere.Services.NotesphereDataAccessLayer;
-using Notesphere.Services.NotesphereRepository;
 using Notesphere.Services.NotesRepository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,13 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//register DbContext with SQLite
+builder.Services.AddDbContext<NotesphereDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
+
 //Interface 
 builder.Services.AddScoped<INotesphereService, NotesphereRepository>();
 
 var app = builder.Build();
 
-builder.Services.AddDbContext<NotesphereDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
