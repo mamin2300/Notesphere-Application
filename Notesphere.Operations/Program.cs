@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Notesphere.Services.NotesphereDataAccessLayer;
-using Notesphere.Services.NotesRepository;
+using Notesphere.Services.NotesphereRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 

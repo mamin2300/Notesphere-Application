@@ -3,7 +3,7 @@ using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
 using Notesphere.Services.NotesphereDataAccessLayer;
 
-namespace Notesphere.Services.NotesRepository
+namespace Notesphere.Services.NotesphereRepository
 {
     public class NotesphereRepository : INotesphereService
     {
