@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Notesphere.Services.NotesRepository
 {
-    public class NotesRepository : INotesphereService
+    public class NotesphereRepository : INotesphereService
     {
         private readonly NotesphereDbContext _db;
 
-        public NotesRepository(NotesphereDbContext db)
+        public NotesphereRepository(NotesphereDbContext db)
         {
             _db = db;
         }
