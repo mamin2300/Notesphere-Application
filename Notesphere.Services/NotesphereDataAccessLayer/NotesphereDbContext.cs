@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Notesphere.Entities.NotesModels;
+using Notesphere.Entities.PlannerModels;
 
 namespace Notesphere.Services.NotesphereDataAccessLayer
 {
@@ -27,6 +28,10 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         }
 
         //planner.db sets
+        public DbSet<Event> Events { get; set; }
+        public DbSet<RecurringEvent> RecurringEvents { get; set; }
+        public DbSet<Conflict> Conflicts { get; set; }
+
         //sharing.db sets
         //productivity.db sets
     }
