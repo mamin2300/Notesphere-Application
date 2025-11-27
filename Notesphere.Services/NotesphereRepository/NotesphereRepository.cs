@@ -2,6 +2,7 @@
 using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
 using Notesphere.Services.NotesphereDataAccessLayer;
+using Notesphere.Services.NotesphereRepository;
 
 namespace Notesphere.Services.NotesRepository
 {

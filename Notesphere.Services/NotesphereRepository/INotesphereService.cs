@@ -1,7 +1,7 @@
 ﻿using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
 
-namespace Notesphere.Services.NotesRepository
+namespace Notesphere.Services.NotesphereRepository
 {
     public interface INotesphereService
     {
