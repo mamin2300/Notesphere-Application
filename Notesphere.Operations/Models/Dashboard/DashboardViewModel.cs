@@ -18,8 +18,6 @@ namespace Notesphere.Operations.Models.Dashboard
         public List<Workspace> Workspaces { get; set; } = new();
         public int?SelectedWorkspaceId { get; set; }
 
-
-
     }
 
 }
