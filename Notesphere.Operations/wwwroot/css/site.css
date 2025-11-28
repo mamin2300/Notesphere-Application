@@ -1,22 +1,317 @@
-html {
-  font-size: 14px;
+:root {
+    /* your palette */
+    --ns-black: #0A0908;
+    --ns-maroon: #49111C;
+    --ns-offwhite: #F2F4F3;
+    --ns-tan: #A9927D;
+    --ns-brown: #5E503F;
+    /* ui tokens */
+    --ns-bg: var(--ns-offwhite);
+    --ns-gradient: linear-gradient(135deg, var(--ns-offwhite), rgba(169,146,125,0.1));
+    --ns-sidebar-bg: var(--ns-black);
+    --ns-accent: var(--ns-maroon);
+    --ns-accent-soft: var(--ns-tan);
+    --ns-text-main: var(--ns-black);
+    --ns-text-muted: #7a7a7a;
+    --ns-card-bg: #ffffff;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.ns-app-wrapper {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+    background: var(--ns-gradient);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* SIDEBAR */
+.ns-sidebar {
+    background: var(--ns-sidebar-bg);
+    color: var(--ns-offwhite);
+    padding: 24px 18px;
+    display: flex;
+    flex-direction: column;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.ns-logo {
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    font-size: 0.9rem;
+}
+
+.ns-nav-section {
+    margin-bottom: 18px;
+}
+
+.ns-nav-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: #a5a5a5;
+    margin-bottom: 6px;
+}
+
+.ns-nav-link {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--ns-offwhite);
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+    .ns-nav-link:hover {
+        background: rgba(242, 244, 243, 0.08);
+        opacity: 1;
+    }
+
+.ns-nav-link-active {
+    background: var(--ns-offwhite);
+    color: var(--ns-black);
+    font-weight: 600;
+    opacity: 1;
+}
+
+.ns-new-btn {
+    margin-top: auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--ns-accent);
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    align-self: center;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* MAIN */
+.ns-main {
+    padding: 24px 40px;
+}
+
+.ns-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.ns-page-title {
+    font-size: 1.6rem;
+    margin-bottom: 2px;
+    color: var(--ns-text-main);
+}
+
+.ns-page-subtitle {
+    font-size: 0.9rem;
+    color: var(--ns-text-muted);
+}
+
+.ns-topbar-right {
+    display: flex;
+    gap: 8px;
+}
+
+.ns-chip {
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    background: transparent;
+    color: var(--ns-text-muted);
+}
+
+.ns-chip-active {
+    background: var(--ns-accent);
+    color: #fff;
+}
+
+/* Tabs */
+.ns-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #e3e3e3;
+    margin-bottom: 18px;
+}
+
+.ns-tab {
+    border: none;
+    background: transparent;
+    padding: 6px 10px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--ns-text-muted);
+}
+
+.ns-tab-active {
+    border-bottom: 2px solid var(--ns-accent);
+    color: var(--ns-text-main);
+    font-weight: 600;
+}
+
+/* Sections */
+.ns-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.ns-section-title {
+    font-size: 1.1rem;
+}
+
+.ns-section-subtitle {
+    font-size: 0.85rem;
+    color: var(--ns-text-muted);
+}
+
+.ns-link-small {
+    font-size: 0.85rem;
+    color: var(--ns-accent);
+    text-decoration: none;
+}
+
+/* Cards */
+.ns-card-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.ns-card {
+    background: var(--ns-card-bg);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ns-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ns-card-badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(169, 146, 125, 0.15);
+    color: var(--ns-accent-soft);
+}
+
+.ns-card-star {
+    color: #f5b400;
+}
+
+.ns-card-title {
+    font-size: 0.98rem;
+    font-weight: 600;
+}
+
+.ns-card-text {
+    font-size: 0.85rem;
+    color: var(--ns-text-muted);
+}
+
+.ns-card-link {
+    font-size: 0.85rem;
+    color: var(--ns-accent);
+    text-decoration: none;
+}
+
+.ns-empty {
+    background: var(--ns-card-bg);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+}
+
+.ns-btn-primary {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--ns-accent);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Second row */
+.ns-second-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ns-box {
+    background: var(--ns-card-bg);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+}
+
+.ns-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+}
+
+.ns-muted-small {
+    font-size: 0.8rem;
+    color: var(--ns-text-muted);
+}
+
+.ns-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .ns-list li {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        padding: 4px 0;
+    }
+
+.ns-list-title {
+    font-weight: 500;
+}
+
+.ns-list-meta {
+    color: var(--ns-text-muted);
+    font-size: 0.8rem;
+}
+
+.ns-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ns-action-btn {
+    border-radius: 10px;
+    border: 1px solid rgba(169, 146, 125, 0.3); /* tan/brown tone */
+    background: #f7f5f3;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: left;
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0 !important;
+    padding: 0 !important;
 }

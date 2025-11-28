@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Notesphere.Entities.DashboardModels;
+﻿using Notesphere.Entities.DashboardModels;
 using Notesphere.Entities.NotesModels;
 namespace Notesphere.Operations.Models.Dashboard
 {

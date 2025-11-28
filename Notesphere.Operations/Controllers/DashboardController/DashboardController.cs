@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Notesphere.Operations.Models;
 using Notesphere.Operations.Models.Dashboard;
 using Notesphere.Services.DashboardRepository;
 using Notesphere.Services.NotesRepository;
