@@ -1,6 +1,5 @@
 ﻿using Notesphere.Entities.PlannerModels;
-using Notesphere.Services.NotesphereRepository;
-
+using Notesphere.Services.PlannerRepository;
 namespace Notesphere.Operations.PlannerServices
 {
     
@@ -9,14 +8,14 @@ namespace Notesphere.Operations.PlannerServices
     
     public class PlannerService
     {
-        private readonly INotesphereService _repository;
+        private readonly IPlannerService _repository;
         private readonly ConflictDetector _conflictDetector;
         private readonly RecurrenceEngine _recurrenceEngine;
 
       
         // Constructor - injects dependencies
         public PlannerService(
-            INotesphereService repository,
+            IPlannerService repository,
             ConflictDetector conflictDetector,
             RecurrenceEngine recurrenceEngine)
         {
