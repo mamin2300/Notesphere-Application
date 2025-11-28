@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Notesphere.Services.NotesphereDataAccessLayer;
-using Notesphere.Services.NotesphereRepository;
+using Notesphere.Services.NotesRepository;
+using Notesphere.Services.PlannerRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,8 @@ builder.Services.AddDbContext<NotesphereDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
 
 //Interface 
-builder.Services.AddScoped<INotesphereService, NotesphereRepository>();
+builder.Services.AddScoped<INotesService, NotesRepository>();
+builder.Services.AddScoped<IPlannerService, PlannerRepository>();
 
 var app = builder.Build();
 

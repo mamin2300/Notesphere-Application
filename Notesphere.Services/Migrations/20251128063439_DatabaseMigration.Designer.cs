@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notesphere.Services.NotesphereDataAccessLayer;
 
@@ -10,9 +11,11 @@ using Notesphere.Services.NotesphereDataAccessLayer;
 namespace Notesphere.Services.Migrations
 {
     [DbContext(typeof(NotesphereDbContext))]
-    partial class NotesphereDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251128063439_DatabaseMigration")]
+    partial class DatabaseMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
