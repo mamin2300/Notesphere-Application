@@ -24,6 +24,9 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Models\Productivity\" />
+    <Folder Include="Models\Sharing\" />
+    <Folder Include="Models\Notes\" />
   </ItemGroup>
 
 </Project>

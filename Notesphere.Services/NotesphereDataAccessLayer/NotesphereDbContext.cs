@@ -39,7 +39,9 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         public DbSet<Conflict> Conflicts { get; set; }
 
         //Sharing.db sets
+
         //Productivity.db sets
+
     }
 }
 

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Notesphere.Services.NotesphereDataAccessLayer;
 using Notesphere.Services.NotesRepository;
 using Notesphere.Services.PlannerRepository;
+using Notesphere.Services.DashboardRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<NotesphereDbContext>(options =>
 //Interface 
 builder.Services.AddScoped<INotesService, NotesRepository>();
 builder.Services.AddScoped<IPlannerService, PlannerRepository>();
+builder.Services.AddScoped<IDashboardServices, DashboardRepository>();
 
 var app = builder.Build();
 
