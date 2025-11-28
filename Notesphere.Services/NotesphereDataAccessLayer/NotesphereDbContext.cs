@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Notesphere.Entities.DashboardModels;
 using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
 
@@ -10,7 +11,12 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         {
         }
 
-        //notes.db sets 
+        //Dashboard.db sets
+        public DbSet<Reminder> Reminders { get; set; }
+        public DbSet<QuickActions> QuickActions { get; set; }
+        public DbSet<Workspace>Workspaces { get; set; }
+
+        //Notes.db sets 
         public DbSet<Note> Notes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<NoteTag> NoteTags { get; set; }
@@ -26,14 +32,16 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
             modelBuilder.Entity<NoteTag>()
                 .HasKey(nt => new { nt.NoteId, nt.TagId });
         }
-
-        //planner.db sets
+        
+        //Planner.db sets
         public DbSet<Event> Events { get; set; }
         public DbSet<RecurringEvent> RecurringEvents { get; set; }
         public DbSet<Conflict> Conflicts { get; set; }
 
-        //sharing.db sets
-        //productivity.db sets
+        //Sharing.db sets
+
+        //Productivity.db sets
+
     }
 }
 

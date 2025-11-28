@@ -1,69 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
 using Notesphere.Services.NotesphereDataAccessLayer;
-using Notesphere.Services.NotesphereRepository;
 
-namespace Notesphere.Services.NotesphereRepository
+
+namespace Notesphere.Services.PlannerRepository
 {
-    public class NotesphereRepository : INotesphereService
+    public class PlannerRepository: IPlannerService
     {
         private readonly NotesphereDbContext _db;
 
-        public NotesphereRepository(NotesphereDbContext db)
+        public PlannerRepository(NotesphereDbContext db)
         {
             _db = db;
         }
-        // Notes CRUD operations
-
-        public async Task<List<Note>> GetAllNotes() =>
-            await _db.Notes.ToListAsync();
-
-        public async Task<Note?> GetNoteById(int id) =>
-            await _db.Notes.FirstOrDefaultAsync(n => n.Id == id);
-
-        public async Task AddNote(Note note)
-        {
-            _db.Notes.Add(note);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task UpdateNote(Note note)
-        {
-            _db.Notes.Update(note);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteNote(int id)
-        {
-            var note = await _db.Notes.FindAsync(id);
-            if (note != null)
-            {
-                _db.Notes.Remove(note);
-                await _db.SaveChangesAsync();
-            }
-        }
-
-        public async Task<List<NoteTemplate>> GetTemplates() =>
-            await _db.NoteTemplates.ToListAsync();
-
-        public async Task<List<Tag>> GetAllTags() =>
-            await _db.Tags.ToListAsync();
-
-        public async Task SaveNoteVersion(NoteVersion version)
-        {
-            _db.NoteVersions.Add(version);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task AddTagToNote(NoteTag join)
-        {
-            _db.NoteTags.Add(join);
-            await _db.SaveChangesAsync();
-        }
-
         //planner CRUD operations
-        
+
         // Gets a single event by its ID for a specific user
         public async Task<Event> GetEventByIdAsync(int eventId, string userId)
         {
@@ -80,7 +31,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         // Gets all events for a specific user
         public async Task<List<Event>> GetAllEventsAsync(string userId)
         {
@@ -98,7 +49,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Gets events within a specific date range for a user
         public async Task<List<Event>> GetEventsByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
         {
@@ -118,7 +69,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Gets events by type (Class, Assignment, Exam, etc.)
         public async Task<List<Event>> GetEventsByTypeAsync(string userId, string eventType)
         {
@@ -136,7 +87,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Adds a new event to the database
         public async Task<int> AddEventAsync(Event eventToAdd)
         {
@@ -159,7 +110,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Updates an existing event
         public async Task<bool> UpdateEventAsync(Event eventToUpdate)
         {
@@ -199,7 +150,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         /// Deletes an event by ID
         public async Task<bool> DeleteEventAsync(int eventId, string userId)
         {
@@ -238,7 +189,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         // Gets all recurring events for a user
         public async Task<List<RecurringEvent>> GetAllRecurringEventsAsync(string userId)
         {
@@ -255,7 +206,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         // Saves a new recurring event pattern
         public async Task<int> SaveRecurringEventAsync(RecurringEvent recurringEvent)
         {
@@ -276,7 +227,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Updates an existing recurring event pattern
         public async Task<bool> UpdateRecurringEventAsync(RecurringEvent recurringEvent)
         {
@@ -313,7 +264,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Deletes a recurring event pattern and optionally all its occurrences
         public async Task<bool> DeleteRecurringEventAsync(int recurrenceId, bool deleteAllOccurrences)
         {
@@ -370,7 +321,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-        
+
         // Gets unresolved conflicts for a user
         public async Task<List<Conflict>> GetUnresolvedConflictsAsync(string userId)
         {
@@ -410,7 +361,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         // Adds a detected conflict to the database
         public async Task<int> AddConflictAsync(Conflict conflict)
         {
@@ -429,7 +380,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         // Marks a conflict as resolved
         public async Task<bool> ResolveConflictAsync(int conflictId)
         {
@@ -454,7 +405,7 @@ namespace Notesphere.Services.NotesphereRepository
             }
         }
 
-       
+
         // Deletes a conflict record
         public async Task<bool> DeleteConflictAsync(int conflictId)
         {
@@ -476,7 +427,5 @@ namespace Notesphere.Services.NotesphereRepository
                 throw new Exception($"Error deleting conflict: {ex.Message}");
             }
         }
-        //sharing CRUD operations
-        //productivity CRUD operations
     }
 }

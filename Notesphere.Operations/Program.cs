@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Notesphere.Services.NotesphereDataAccessLayer;
-using Notesphere.Services.NotesphereRepository;
+using Notesphere.Services.NotesRepository;
+using Notesphere.Services.PlannerRepository;
+using Notesphere.Services.DashboardRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +14,11 @@ builder.Services.AddDbContext<NotesphereDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
 
 //Interface 
-builder.Services.AddScoped<INotesphereService, NotesphereRepository>();
+builder.Services.AddScoped<INotesService, NotesRepository>();
+builder.Services.AddScoped<IPlannerService, PlannerRepository>();
+builder.Services.AddScoped<IDashboardServices, DashboardRepository>();
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -35,6 +37,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
 app.Run();
