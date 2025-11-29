@@ -47,13 +47,24 @@ namespace Notesphere.Operations.Controllers
         }
 
         // GET: Notes/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            await PopulateStudentUserDropDown();
-            await PopulateTemplates();
+            // When user clicks "Create Note" — first create an empty note
+            var newNote = new Note
+            {
+                Title = "Untitled",
+                Content = "",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                StudentUserId = 1 // you can change this later
+            };
 
-            return View(new Note()); 
+            _notesService.AddNote(newNote);
+
+            // Redirect to full editor
+            return RedirectToAction("Editor", new { id = newNote.Id });
         }
+
 
 
         // POST: Notes/Create

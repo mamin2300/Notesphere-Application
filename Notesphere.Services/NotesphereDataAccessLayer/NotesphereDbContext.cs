@@ -83,7 +83,6 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
             );
         }
 
-
         //Planner.db sets
         public DbSet<Event> Events { get; set; }
         public DbSet<RecurringEvent> RecurringEvents { get; set; }
