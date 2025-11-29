@@ -1,0 +1,16 @@
+﻿@model List<Notesphere.Operations.Models.Sharing.NoteCommentDisplayViewModel>
+
+@foreach (var comment in Model)
+{
+    <div class="border p-2 mb-2">
+        <strong>@comment.AuthorName</strong> (@comment.CreatedAt)
+        <p>@comment.Content</p>
+
+        @if (comment.Replies != null && comment.Replies.Any())
+        {
+            <div class="ml-4">
+                @Html.Partial("_Comments", comment.Replies)
+            </div>
+        }
+    </div>
+}

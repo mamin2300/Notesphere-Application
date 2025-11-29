@@ -1,0 +1,33 @@
+﻿@model List<Notesphere.Operations.Models.Sharing.GroupSpaceListItemViewModel>
+
+@{
+    ViewData["Title"] = "My Groups";
+}
+
+<h2>My Groups</h2>
+
+<p>
+    <a asp-controller="Sharing" asp-action="CreateGroup" class="btn btn-primary">Create New Group</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Members</th>
+            <th>Your Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.Name</td>
+                <td>@g.Description</td>
+                <td>@g.MemberCount</td>
+                <td>@g.Role</td>
+            </tr>
+        }
+    </tbody>
+</table>
