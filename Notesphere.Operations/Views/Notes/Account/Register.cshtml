@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+<link rel="stylesheet" href="~/css/Notes.css" />
+
+<div class="ns-note-create">
+    <h1 class="ns-note-create-title">Create account</h1>
+
+    <form asp-action="Register" method="post">
+        <div class="ns-owner-row">
+            <label class="ns-label">Name</label>
+            <input name="name" class="ns-input" required />
+        </div>
+
+        <div class="ns-owner-row">
+            <label class="ns-label">Email</label>
+            <input name="email" type="email" class="ns-input" required />
+        </div>
+
+        <div class="ns-owner-row">
+            <label class="ns-label">Password</label>
+            <input name="password" type="password" class="ns-input" required />
+        </div>
+
+        <div class="ns-owner-row">
+            <label class="ns-label">Confirm password</label>
+            <input name="confirmPassword" type="password" class="ns-input" required />
+        </div>
+
+        <div class="ns-actions-row">
+            <button type="submit" class="ns-btn-primary">Register</button>
+            <a asp-action="Login" class="ns-btn-link">Already have an account? Log in</a>
+        </div>
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </form>
+</div>

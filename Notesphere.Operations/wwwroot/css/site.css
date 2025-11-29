@@ -133,6 +133,12 @@
     gap: 8px;
 }
 
+.ns-auth-inline-form 
+{
+    display: inline;
+}
+
+
 .ns-chip 
 {
     border-radius: 999px;

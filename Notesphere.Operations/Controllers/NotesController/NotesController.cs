@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Notesphere.Entities.NotesModels;
 using Notesphere.Services.NotesRepository;
+using System.Security.Claims;
 
 namespace Notesphere.Operations.Controllers
 {
@@ -49,32 +50,34 @@ namespace Notesphere.Operations.Controllers
         // GET: Notes/Create
         public async Task<IActionResult> Create()
         {
-            await PopulateStudentUserDropDown();
-            await PopulateTemplates();
             return View();
         }
 
         // POST: Notes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId")] Note note)
+        public async Task<IActionResult> Create([Bind("Title,Content,IsFavorite,TemplateId")] Note note)
         {
-            if (ModelState.IsValid)
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
             {
-                note.CreatedAt = DateTime.Now;
-                note.UpdatedAt = DateTime.Now;
-
-                await _notesService.AddNote(note);   // this calls SaveChangesAsync
-
-                // now the note has a real Id, so go to the editor
-                return RedirectToAction("Editor", new { id = note.Id });
+                // not logged in, send to login
+                return RedirectToAction("Login", "Account");
             }
 
-            await PopulateStudentUserDropDown(note.StudentUserId);
-            await PopulateTemplates(note.TemplateId);
+            note.StudentUserId = int.Parse(userIdClaim);
+            note.CreatedAt = DateTime.Now;
+            note.UpdatedAt = DateTime.Now;
+
+            if (ModelState.IsValid)
+            {
+                await _notesService.AddNote(note);
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(note);
         }
+
 
 
         // GET: Notes/Edit/5

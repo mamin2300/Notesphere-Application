@@ -52,8 +52,24 @@
                 </p>
             </div>
             <div class="ns-topbar-right">
-                <span class="ns-chip ns-chip-active">All</span>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="ns-auth-inline-form">
+                        <button type="submit" class="ns-chip ns-chip-active">
+                            @User.Identity?.Name · Logout
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="ns-chip ns-chip-active">
+                        Login
+                    </a>
+                    @* optional: show Sign up too *@
+                    @* <a asp-controller="Account" asp-action="Register" class="ns-chip">Sign up</a> *@
+                }
             </div>
+
         </header>
 
         <!-- Tabs -->

@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+<link rel="stylesheet" href="~/css/Notes.css" />
+
+<div class="ns-note-create">
+    <h1 class="ns-note-create-title">Log in</h1>
+
+    <form asp-action="Login" method="post">
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+        <div class="ns-owner-row">
+            <label class="ns-label">Email</label>
+            <input name="email" type="email" class="ns-input" required />
+        </div>
+
+        <div class="ns-owner-row">
+            <label class="ns-label">Password</label>
+            <input name="password" type="password" class="ns-input" required />
+        </div>
+
+        <div class="ns-actions-row">
+            <button type="submit" class="ns-btn-primary">Login</button>
+            <a asp-action="Register" class="ns-btn-link">Create new account</a>
+        </div>
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </form>
+</div>
