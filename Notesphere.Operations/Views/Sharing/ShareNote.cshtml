@@ -1,0 +1,40 @@
+﻿@model Notesphere.Operations.Models.Sharing.ShareNoteViewModel
+
+@{
+    ViewData["Title"] = "Share Note";
+}
+
+<h2>Share Note @Model.NoteId</h2>
+
+<form asp-action="ShareNote" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="NoteId" />
+
+    <div class="form-group">
+        <label asp-for="TargetType"></label>
+        <select asp-for="TargetType" class="form-control">
+            <option value="0">Individual</option>
+            <option value="1">Group</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TargetUserId"></label>
+        <input asp-for="TargetUserId" class="form-control" />
+        <small class="form-text text-muted">Used when sharing with an individual user.</small>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TargetGroupId"></label>
+        <input asp-for="TargetGroupId" class="form-control" />
+        <small class="form-text text-muted">Used when sharing with a group.</small>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="CanEdit" class="form-check-input" />
+        <label asp-for="CanEdit" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Share</button>
+    <a asp-action="SharedWithMe" class="btn btn-secondary">Cancel</a>
+</form>

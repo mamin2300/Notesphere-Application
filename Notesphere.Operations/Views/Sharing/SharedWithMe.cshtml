@@ -1,0 +1,31 @@
+﻿@model List<Notesphere.Operations.Models.Sharing.SharedNoteListItemViewModel>
+
+@{
+    ViewData["Title"] = "Notes Shared With Me";
+}
+
+<h2>Notes Shared With Me</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Note Id</th>
+            <th>Shared By</th>
+            <th>Shared To</th>
+            <th>Type</th>
+            <th>Can Edit?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NoteId</td>
+                <td>@item.SharedBy</td>
+                <td>@item.SharedTo</td>
+                <td>@item.TargetType</td>
+                <td>@(item.CanEdit ? "Yes" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>
