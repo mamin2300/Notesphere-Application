@@ -150,6 +150,32 @@ namespace Notesphere.Services.Migrations
                     b.ToTable("NoteExports");
                 });
 
+            modelBuilder.Entity("Notesphere.Entities.NotesModels.NotePage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("NoteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PageNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NoteId");
+
+                    b.ToTable("NotePages");
+                });
+
             modelBuilder.Entity("Notesphere.Entities.NotesModels.NoteTag", b =>
                 {
                     b.Property<int>("NoteId")
@@ -269,6 +295,11 @@ namespace Notesphere.Services.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -568,12 +599,23 @@ namespace Notesphere.Services.Migrations
             modelBuilder.Entity("Notesphere.Entities.NotesModels.Note", b =>
                 {
                     b.HasOne("Notesphere.Entities.NotesModels.StudentUser", "StudentUser")
-                        .WithMany()
+                        .WithMany("Notes")
                         .HasForeignKey("StudentUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("StudentUser");
+                });
+
+            modelBuilder.Entity("Notesphere.Entities.NotesModels.NotePage", b =>
+                {
+                    b.HasOne("Notesphere.Entities.NotesModels.Note", "Note")
+                        .WithMany()
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Note");
                 });
 
             modelBuilder.Entity("Notesphere.Entities.PlannerModels.Conflict", b =>
@@ -635,6 +677,11 @@ namespace Notesphere.Services.Migrations
                         .HasForeignKey("GroupSpaceId");
 
                     b.Navigation("GroupSpace");
+                });
+
+            modelBuilder.Entity("Notesphere.Entities.NotesModels.StudentUser", b =>
+                {
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Notesphere.Entities.PlannerModels.RecurringEvent", b =>

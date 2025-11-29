@@ -1,0 +1,141 @@
+﻿@model Notesphere.Operations.Models.Planner.EventFormViewModel
+@{
+    ViewData["Title"] = "Edit Event";
+}
+
+<div class="edit-event-container" style="background-color: #F2E4F3; min-height: 100vh; padding: 20px;">
+    
+    <div class="form-container" style="max-width: 800px; margin: 0 auto; background-color: white; border-radius: 8px; padding: 30px;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #0A0908; margin: 0;">EDIT EVENT</h2>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary" style="margin-right: 10px;">Cancel</a>
+                <button type="button" class="btn" style="background-color: #EF4444; color: white;" 
+                        onclick="if(confirm('Are you sure you want to delete this event?')) document.getElementById('deleteForm').submit();">
+                    Delete Event
+                </button>
+            </div>
+        </div>
+
+        <!-- Conflict Warning -->
+        @if (Model.HasConflicts)
+        {
+            <div class="alert alert-warning">
+                <strong>⚠️ Potential Conflicts Detected!</strong>
+                <p>This event may conflict with other events after editing.</p>
+            </div>
+        }
+
+        <!-- Edit Form -->
+        <form asp-action="EditEvent" asp-route-id="@Model.EventId" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="EventId" />
+
+            <!-- Event Title -->
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label" style="color: #0A0908; font-weight: bold;">Event Title *</label>
+                <input asp-for="Title" class="form-control" 
+                       style="border: 2px solid #A9927D; border-radius: 5px;" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label" style="color: #0A0908; font-weight: bold;">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"
+                          style="border: 2px solid #A9927D; border-radius: 5px;"></textarea>
+            </div>
+
+            <!-- Date and Time Row -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="StartTime" class="form-label" style="color: #0A0908; font-weight: bold;">Start Time *</label>
+                    <input asp-for="StartTime" type="datetime-local" class="form-control" 
+                           style="border: 2px solid #A9927D; border-radius: 5px;" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EndTime" class="form-label" style="color: #0A0908; font-weight: bold;">End Time *</label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control" 
+                           style="border: 2px solid #A9927D; border-radius: 5px;" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- All Day Event -->
+            <div class="mb-3 form-check">
+                <input asp-for="IsAllDay" type="checkbox" class="form-check-input" />
+                <label asp-for="IsAllDay" class="form-check-label" style="color: #0A0908;">All Day Event</label>
+            </div>
+
+            <!-- Location -->
+            <div class="mb-3">
+                <label asp-for="Location" class="form-label" style="color: #0A0908; font-weight: bold;">Location</label>
+                <input asp-for="Location" class="form-control" 
+                       style="border: 2px solid #A9927D; border-radius: 5px;" />
+            </div>
+
+            <!-- Event Type and Color -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="EventType" class="form-label" style="color: #0A0908; font-weight: bold;">Event Type *</label>
+                    <select asp-for="EventType" asp-items="@(new SelectList(Model.EventTypeOptions))" class="form-select"
+                            style="border: 2px solid #A9927D; border-radius: 5px;">
+                    </select>
+                    <span asp-validation-for="EventType" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" style="color: #0A0908; font-weight: bold;">Color</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        @foreach (var color in Model.ColorOptions)
+                        {
+                            <label style="cursor: pointer;">
+                                <input type="radio" asp-for="ColorCode" value="@color"
+                                       checked="@(Model.ColorCode == color)"
+                                       style="display: none;" />
+                                <div style="width: 40px; height: 40px; background-color: @color; border-radius: 5px; border: 3px solid @(Model.ColorCode == color ? "#0A0908" : "transparent");"
+                                     onclick="this.previousElementSibling.checked = true; document.querySelectorAll('.color-option').forEach(el => el.style.borderColor = 'transparent'); this.style.borderColor = '#0A0908';"
+                                     class="color-option"></div>
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label" style="color: #0A0908; font-weight: bold;">Notes</label>
+                <textarea asp-for="Notes" class="form-control" rows="2"
+                          style="border: 2px solid #A9927D; border-radius: 5px;"></textarea>
+            </div>
+
+            <!-- Recurring Event Info (Read-only if part of recurring series) -->
+            @if (Model.IsRecurring)
+            {
+                <div class="alert" style="background-color: #FFF9E6; border: 2px solid #F59E0B;">
+                    <strong>🔄 This is a recurring event</strong>
+                    <p style="margin-bottom: 0;">Pattern: @Model.RecurrencePattern (Every @Model.RecurrenceInterval)</p>
+                    <small>Note: Editing this occurrence only affects this single event, not the entire series.</small>
+                </div>
+            }
+
+            <!-- Submit Buttons -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <a asp-action="Index" class="btn" style="background-color: #A9927D; color: white;">Cancel</a>
+                <button type="submit" class="btn" style="background-color: #49111C; color: white;">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+
+        <!-- Delete Form (Hidden) -->
+        <form id="deleteForm" asp-action="DeleteEvent" asp-route-id="@Model.EventId" method="post" style="display: none;">
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

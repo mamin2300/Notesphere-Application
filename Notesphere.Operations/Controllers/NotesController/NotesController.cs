@@ -47,41 +47,35 @@ namespace Notesphere.Operations.Controllers
         }
 
         // GET: Notes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // When user clicks "Create Note" — first create an empty note
-            var newNote = new Note
-            {
-                Title = "Untitled",
-                Content = "",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                StudentUserId = 1 // you can change this later
-            };
-
-            _notesService.AddNote(newNote);
-
-            // Redirect to full editor
-            return RedirectToAction("Editor", new { id = newNote.Id });
+            await PopulateStudentUserDropDown();
+            await PopulateTemplates();
+            return View();
         }
-
-
 
         // POST: Notes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId")] Note note)
+        public async Task<IActionResult> Create(
+            [Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId")] Note note)
         {
             if (ModelState.IsValid)
             {
-                await _notesService.AddNote(note);
-                return RedirectToAction(nameof(Index));
+                note.CreatedAt = DateTime.Now;
+                note.UpdatedAt = DateTime.Now;
+
+                await _notesService.AddNote(note);   // this calls SaveChangesAsync
+
+                // now the note has a real Id, so go to the editor
+                return RedirectToAction("Editor", new { id = note.Id });
             }
 
             await PopulateStudentUserDropDown(note.StudentUserId);
             await PopulateTemplates(note.TemplateId);
             return View(note);
         }
+
 
         // GET: Notes/Edit/5
         public async Task<IActionResult> Edit(int? id)

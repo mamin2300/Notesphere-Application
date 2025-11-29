@@ -1,0 +1,163 @@
+﻿@using Notesphere.Entities.PlannerModels
+@using System.Linq
+@model Notesphere.Operations.Models.Planner.WeeklyPlannerViewModel
+@{
+    ViewData["Title"] = "Weekly Planner";
+}
+
+<!-- Success/Error Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="planner-container" style="background-color: #F2E4F3; min-height: 100vh; padding: 20px;">
+
+    <!-- Header Section -->
+    <div class="planner-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #0A0908; font-weight: bold;">WEEKLY PLANNER</h2>
+
+        <div class="header-actions">
+            <a asp-action="CreateEvent" class="btn" style="background-color: #49111C; color: white; margin-right: 10px;">
+                + New Event
+            </a>
+            <a asp-action="Conflicts" class="btn" style="background-color: #5E503F; color: white;">
+                @if (Model.HasConflicts)
+                {
+                    <span>⚠️ @Model.Conflicts.Count Conflicts</span>
+                }
+                else
+                {
+                    <span>View Conflicts</span>
+                }
+            </a>
+        </div>
+    </div>
+
+    <!-- Week Navigation -->
+    <div class="week-navigation" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background-color: white; padding: 15px; border-radius: 8px;">
+        <a asp-action="Index" asp-route-date="@Model.PreviousWeek" class="btn btn-sm" style="background-color: #A9927D; color: white;">
+            ← Previous Week
+        </a>
+
+        <h4 style="color: #49111C; margin: 0;">@Model.GetWeekDisplay()</h4>
+
+        <a asp-action="Index" asp-route-date="@Model.NextWeek" class="btn btn-sm" style="background-color: #A9927D; color: white;">
+            Next Week →
+        </a>
+    </div>
+
+    <!-- Weekly Grid -->
+    <div class="weekly-grid" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <div class="row">
+            @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
+            {
+                var dayEvents = Model.EventsByDay[day];
+                var isToday = Model.IsToday(day);
+
+                <div class="col" style="border-right: 1px solid #ddd; padding: 10px; @(isToday ? "background-color: #FFF9E6;" : "")">
+                    <div class="day-header" style="text-align: center; margin-bottom: 15px;">
+                        <h5 style="color: @(isToday ? "#49111C" : "#0A0908"); font-weight: bold;">
+                            @day.ToString().ToUpper()
+                        </h5>
+                        @if (isToday)
+                        {
+                            <span style="color: #49111C; font-size: 0.9em;">TODAY</span>
+                        }
+                    </div>
+
+                    <!-- Events for this day -->
+                    <div class="day-events">
+                        @if (dayEvents.Any())
+                        {
+                            @foreach (var evt in ((List<Event>)dayEvents).OrderBy(e => e.StartTime))
+                            {
+                                <div class="event-card" style="background-color: @evt.ColorCode; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; cursor: pointer;"
+                                     onclick="location.href='@Url.Action("EditEvent", new { id = evt.EventId })'">
+                                    <div style="font-weight: bold; font-size: 0.9em;">@evt.Title</div>
+                                    <div style="font-size: 0.8em;">
+                                        @evt.StartTime.ToString("h:mm tt") - @evt.EndTime.ToString("h:mm tt")
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(evt.Location))
+                                    {
+                                        <div style="font-size: 0.75em; margin-top: 5px;">📍 @evt.Location</div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div style="text-align: center; color: #999; font-size: 0.85em; padding: 20px;">
+                                No events
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Add event button for this day -->
+                    <a asp-action="CreateEvent" asp-route-date="@Model.WeekStartDate.AddDays((int)day)"
+                       class="btn btn-sm btn-outline-secondary" style="width: 100%; margin-top: 10px; font-size: 0.8em;">
+                        + Add Event
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Bottom Section: Notes & Upcoming -->
+    <div class="row">
+        <!-- Notes Section -->
+        <div class="col-md-8">
+            <div class="notes-section" style="background-color: white; border-radius: 8px; padding: 20px;">
+                <h5 style="color: #0A0908; margin-bottom: 15px;">📝 NOTES</h5>
+                <textarea class="form-control" rows="5" placeholder="Add notes for this week..."
+                          style="border: 2px solid #A9927D; border-radius: 5px;"></textarea>
+            </div>
+        </div>
+
+        <!-- Coming Up Section -->
+        <div class="col-md-4">
+            <div class="upcoming-section" style="background-color: white; border-radius: 8px; padding: 20px;">
+                <h5 style="color: #0A0908; margin-bottom: 15px;">📋 COMING UP</h5>
+
+                @if (Model.UpcomingEvents.Any())
+                {
+                    <ul style="list-style: none; padding: 0;">
+                        @foreach (var evt in Model.UpcomingEvents.Take(5))
+                        {
+                            <li style="margin-bottom: 10px; padding: 8px; background-color: #F2E4F3; border-radius: 5px;">
+                                <div style="font-weight: bold; color: #49111C;">@evt.Title</div>
+                                <div style="font-size: 0.85em; color: #666;">
+                                    @evt.StartTime.ToString("MMM dd, h:mm tt")
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p style="color: #999; text-align: center;">No upcoming events</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss alerts after 3 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 3000);
+    </script>
+}
