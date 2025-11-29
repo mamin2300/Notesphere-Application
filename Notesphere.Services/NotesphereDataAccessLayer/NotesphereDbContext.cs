@@ -25,6 +25,8 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         public DbSet<NoteTemplate> NoteTemplates { get; set; }
         public DbSet<NoteVersion> NoteVersions { get; set; }
         public DbSet<NoteExport> NoteExports { get; set; }
+        public DbSet<NotePage> NotePages { get; set; }
+
 
         //Sharing.db sets
         public DbSet<GroupSpace> GroupSpaces { get; set; }
@@ -80,7 +82,6 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
                 }
             );
         }
-
 
         //Planner.db sets
         public DbSet<Event> Events { get; set; }

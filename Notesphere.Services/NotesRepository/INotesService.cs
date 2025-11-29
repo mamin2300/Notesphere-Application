@@ -18,5 +18,11 @@ namespace Notesphere.Services.NotesRepository
         Task SaveNoteVersion(NoteVersion Version);
         Task AddTagToNote(NoteTag join);
         Task<List<StudentUser>> GetStudentUsers();
+        Task<List<NotePage>> GetPagesByNoteId(int noteId);
+        Task SavePageImage(int noteId, int pageNumber, string imageData);
+        Task<int> AddNewPage(int noteId);
+
+        Task DeletePage(int noteId, int pageNumber);
+
     }
 }

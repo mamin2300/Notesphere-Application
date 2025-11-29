@@ -47,13 +47,24 @@ namespace Notesphere.Operations.Controllers
         }
 
         // GET: Notes/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            await PopulateStudentUserDropDown();
-            await PopulateTemplates();
+            // When user clicks "Create Note" — first create an empty note
+            var newNote = new Note
+            {
+                Title = "Untitled",
+                Content = "",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                StudentUserId = 1 // you can change this later
+            };
 
-            return View(new Note()); 
+            _notesService.AddNote(newNote);
+
+            // Redirect to full editor
+            return RedirectToAction("Editor", new { id = newNote.Id });
         }
+
 
 
         // POST: Notes/Create
@@ -124,5 +135,40 @@ namespace Notesphere.Operations.Controllers
             await _notesService.DeleteNote(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Editor(int id)
+        {
+            var note = await _notesService.GetNoteById(id);
+            if (note == null) return NotFound();
+
+            var pages = await _notesService.GetPagesByNoteId(id);
+            ViewBag.Pages = pages;
+
+            return View(note);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePage(int noteId, int pageNumber, string imageData)
+        {
+            await _notesService.SavePageImage(noteId, pageNumber, imageData);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPage(int noteId)
+        {
+            int newPage = await _notesService.AddNewPage(noteId);
+            return Json(new { pageNumber = newPage });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePage(int noteId, int pageNumber)
+        {
+            await _notesService.DeletePage(noteId, pageNumber);
+            return Ok();
+        }
+
+
+
     }
 }

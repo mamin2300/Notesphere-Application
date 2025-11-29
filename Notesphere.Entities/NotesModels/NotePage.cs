@@ -12,7 +12,6 @@ namespace Notesphere.Entities.NotesModels
 
         public int PageNumber { get; set; }
 
-        // PNG data as base64 string
         public string ImageData { get; set; } = string.Empty;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
