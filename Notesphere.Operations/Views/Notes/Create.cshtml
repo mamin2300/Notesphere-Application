@@ -1,10 +1,43 @@
-﻿@{
-    Layout = null;
+﻿@model Notesphere.Entities.NotesModels.Note
+
+@{
+    ViewData["Title"] = "Create a new note";
 }
 
-<script>
-    // If this page is ever hit directly, redirect user
-    window.location.href = "/Notes";
-</script>
+<link rel="stylesheet" href="~/css/Notes.css" asp-append-version="true" />
 
-<p>Redirecting...</p>
+<div class="ns-note-create">
+    <h1 class="ns-note-create-title">Create a new note</h1>
+
+    <form asp-action="Create" method="post">
+        <div class="ns-owner-row">
+            <label class="ns-label">Select Owner</label>
+            <select asp-for="StudentUserId"
+                    asp-items="ViewBag.StudentUserId"
+                    class="ns-input">
+            </select>
+        </div>
+
+        <div class="ns-title-row">
+            <input asp-for="Title"
+                   class="ns-input"
+                   placeholder="Note title..." />
+        </div>
+
+        <div class="ns-content-row">
+            <textarea asp-for="Content"
+                      class="ns-textarea"
+                      placeholder="Start typing your note here..."></textarea>
+        </div>
+
+        <div class="ns-favorite-row">
+            <input asp-for="IsFavorite" type="checkbox" />
+            <span>Mark as favorite</span>
+        </div>
+
+        <div class="ns-actions-row">
+            <button type="submit" class="ns-btn-primary">Create Note</button>
+            <a asp-action="Index" class="ns-btn-link">Back to list</a>
+        </div>
+    </form>
+</div>

@@ -81,6 +81,7 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
                     IsSystemTemplate = true
                 }
             );
+
         }
 
         //Planner.db sets
