@@ -11,9 +11,18 @@ namespace Notesphere.Services.NotesRepository
         Task UpdateNote(Note note);
         Task DeleteNote(int id);
 
-        Task<List<NoteTemplate>> GetTemplates();
+        Task<List<NoteTemplate>> GetTemplatesAsync();
+        Task<NoteTemplate?> GetTemplateByIdAsync(int id);
+
         Task<List<Tag>> GetAllTags();
         Task SaveNoteVersion(NoteVersion Version);
         Task AddTagToNote(NoteTag join);
+        Task<List<StudentUser>> GetStudentUsers();
+        Task<List<NotePage>> GetPagesByNoteId(int noteId);
+        Task SavePageImage(int noteId, int pageNumber, string imageData);
+        Task<int> AddNewPage(int noteId);
+
+        Task DeletePage(int noteId, int pageNumber);
+
     }
 }

@@ -13,8 +13,9 @@ namespace Notesphere.Entities.NotesModels
         public string Content { get; set; } = string.Empty;
         public bool IsFavorite { get; set; }
         public int?TemplateId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
 
 
     }

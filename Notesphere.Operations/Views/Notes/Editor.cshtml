@@ -1,0 +1,75 @@
+﻿@model Notesphere.Entities.NotesModels.Note
+@using Notesphere.Entities.NotesModels
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Notebook Editor";
+    var pages = ViewBag.Pages as List<NotePage> ?? new List<NotePage>();
+}
+
+<link rel="stylesheet" href="~/css/goodnotes.css" />
+
+<div class="gn-editor-wrapper">
+
+    <!-- SIDEBAR WITH PAGE THUMBNAILS -->
+    <div class="gn-sidebar">
+        <h3 class="gn-sidebar-title">Pages</h3>
+
+        <div id="pageList">
+            @foreach (var p in pages)
+            {
+                <div class="gn-thumb" onclick="loadPage(@p.PageNumber)">
+                    <span>Page @p.PageNumber</span>
+                </div>
+            }
+        </div>
+
+        <button class="gn-add-page" onclick="addNewPage()">+ Add Page</button>
+    </div>
+
+
+    <!-- MAIN CANVAS AREA -->
+    <div class="gn-main">
+
+        <!-- FLOATING TOOLBAR -->
+        <div class="gn-toolbar">
+
+            <button onclick="selectTool('pen')" id="tool_pen" class="gn-tool-btn">✎</button>
+            <button onclick="selectTool('highlighter')" id="tool_highlighter" class="gn-tool-btn">🖍</button>
+            <button onclick="selectTool('eraser')" id="tool_eraser" class="gn-tool-btn">🩹</button>
+
+            <span class="divider"></span>
+
+            <button onclick="undoCanvas()" class="gn-tool-btn">↶</button>
+            <button onclick="redoCanvas()" class="gn-tool-btn">↷</button>
+
+            <span class="divider"></span>
+
+            <label class="gn-thickness-label">Size</label>
+            <input type="range" id="brushSize" min="2" max="30" value="6" />
+
+            <span class="divider"></span>
+
+            <div class="gn-color-picker">
+                <div class="color" style="background:#0A0908;" onclick="setColor('#0A0908')"></div>
+                <div class="color" style="background:#49111C;" onclick="setColor('#49111C')"></div>
+                <div class="color" style="background:#A9927D;" onclick="setColor('#A9927D')"></div>
+                <div class="color" style="background:#5E503F;" onclick="setColor('#5E503F')"></div>
+                <div class="color" style="background:#F2F4F3;" onclick="setColor('#F2F4F3')"></div>
+            </div>
+
+        </div>
+
+        <!-- CANVAS -->
+        <canvas id="noteCanvas"></canvas>
+
+        <button class="gn-save-btn" onclick="saveCurrentPage()">Save Page</button>
+    </div>
+</div>
+
+<script>
+    const NOTE_ID = @Model.Id;
+    const EXISTING_PAGES = @pages.Count;
+</script>
+
+<script src="~/js/goodnotes.js"></script>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notesphere.Services.NotesphereDataAccessLayer;
 
@@ -10,9 +11,11 @@ using Notesphere.Services.NotesphereDataAccessLayer;
 namespace Notesphere.Services.Migrations
 {
     [DbContext(typeof(NotesphereDbContext))]
-    partial class NotesphereDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251129073906_UpdatedMigration")]
+    partial class UpdatedMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
@@ -443,128 +446,6 @@ namespace Notesphere.Services.Migrations
                     b.ToTable("RecurringEvents");
                 });
 
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupMember", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GroupSpaceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("StudentUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupSpaceId");
-
-                    b.ToTable("GroupMembers");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupSpace", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GroupSpaces");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.NoteComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AuthorUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("NoteId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ParentCommentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SharedNoteId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.HasIndex("SharedNoteId");
-
-                    b.ToTable("NoteComments");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.SharedNote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("CanEdit")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GroupSpaceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NoteId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("SharedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("SharedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SharedWithUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TargetType")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupSpaceId");
-
-                    b.ToTable("SharedNotes");
-                });
-
             modelBuilder.Entity("Notesphere.Entities.NotesModels.Note", b =>
                 {
                     b.HasOne("Notesphere.Entities.NotesModels.StudentUser", "StudentUser")
@@ -604,59 +485,9 @@ namespace Notesphere.Services.Migrations
                     b.Navigation("RecurringEvent");
                 });
 
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupMember", b =>
-                {
-                    b.HasOne("Notesphere.Entities.SharingModels.GroupSpace", "GroupSpace")
-                        .WithMany("Members")
-                        .HasForeignKey("GroupSpaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("GroupSpace");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.NoteComment", b =>
-                {
-                    b.HasOne("Notesphere.Entities.SharingModels.NoteComment", "ParentComment")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentCommentId");
-
-                    b.HasOne("Notesphere.Entities.SharingModels.SharedNote", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("SharedNoteId");
-
-                    b.Navigation("ParentComment");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.SharedNote", b =>
-                {
-                    b.HasOne("Notesphere.Entities.SharingModels.GroupSpace", "GroupSpace")
-                        .WithMany("SharedNotes")
-                        .HasForeignKey("GroupSpaceId");
-
-                    b.Navigation("GroupSpace");
-                });
-
             modelBuilder.Entity("Notesphere.Entities.PlannerModels.RecurringEvent", b =>
                 {
                     b.Navigation("Events");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupSpace", b =>
-                {
-                    b.Navigation("Members");
-
-                    b.Navigation("SharedNotes");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.NoteComment", b =>
-                {
-                    b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.SharingModels.SharedNote", b =>
-                {
-                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
