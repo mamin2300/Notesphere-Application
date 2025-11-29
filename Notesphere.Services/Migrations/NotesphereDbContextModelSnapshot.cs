@@ -296,6 +296,11 @@ namespace Notesphere.Services.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -594,7 +599,7 @@ namespace Notesphere.Services.Migrations
             modelBuilder.Entity("Notesphere.Entities.NotesModels.Note", b =>
                 {
                     b.HasOne("Notesphere.Entities.NotesModels.StudentUser", "StudentUser")
-                        .WithMany()
+                        .WithMany("Notes")
                         .HasForeignKey("StudentUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -672,6 +677,11 @@ namespace Notesphere.Services.Migrations
                         .HasForeignKey("GroupSpaceId");
 
                     b.Navigation("GroupSpace");
+                });
+
+            modelBuilder.Entity("Notesphere.Entities.NotesModels.StudentUser", b =>
+                {
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Notesphere.Entities.PlannerModels.RecurringEvent", b =>
