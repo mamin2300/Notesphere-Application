@@ -1,0 +1,207 @@
+﻿@model Notesphere.Operations.Models.Planner.EventFormViewModel
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div class="create-event-container" style="background-color: #F2E4F3; min-height: 100vh; padding: 20px;">
+
+    <div class="form-container" style="max-width: 800px; margin: 0 auto; background-color: white; border-radius: 8px; padding: 30px;">
+
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #0A0908; margin: 0;">CREATE NEW EVENT</h2>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+
+        <!-- Conflict Warning -->
+        @if (Model.HasConflicts)
+        {
+            <div class="alert alert-warning">
+                <strong>⚠️ Potential Conflicts Detected!</strong>
+                <p>This event may conflict with existing events. Please review before saving.</p>
+            </div>
+        }
+
+        <!-- Form -->
+        <form asp-action="CreateEvent" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Event Title -->
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label" style="color: #0A0908; font-weight: bold;">Event Title *</label>
+                <input asp-for="Title" class="form-control" placeholder="e.g., Math 101 Lecture"
+                       style="border: 2px solid #A9927D; border-radius: 5px;" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label" style="color: #0A0908; font-weight: bold;">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Add details about this event..."
+                          style="border: 2px solid #A9927D; border-radius: 5px;"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- Date and Time Row -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="StartTime" class="form-label" style="color: #0A0908; font-weight: bold;">Start Time *</label>
+                    <input asp-for="StartTime" type="datetime-local" class="form-control"
+                           style="border: 2px solid #A9927D; border-radius: 5px;" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EndTime" class="form-label" style="color: #0A0908; font-weight: bold;">End Time *</label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control"
+                           style="border: 2px solid #A9927D; border-radius: 5px;" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- All Day Event Checkbox -->
+            <div class="mb-3 form-check">
+                <input asp-for="IsAllDay" type="checkbox" class="form-check-input" />
+                <label asp-for="IsAllDay" class="form-check-label" style="color: #0A0908;">All Day Event</label>
+            </div>
+
+            <!-- Location -->
+            <div class="mb-3">
+                <label asp-for="Location" class="form-label" style="color: #0A0908; font-weight: bold;">Location</label>
+                <input asp-for="Location" class="form-control" placeholder="e.g., Room A101"
+                       style="border: 2px solid #A9927D; border-radius: 5px;" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+
+            <!-- Event Type and Color Row -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="EventType" class="form-label" style="color: #0A0908; font-weight: bold;">Event Type *</label>
+                    <select asp-for="EventType" asp-items="@(new SelectList(Model.EventTypeOptions))" class="form-select"
+                            style="border: 2px solid #A9927D; border-radius: 5px;">
+                        <option value="">-- Select Type --</option>
+                    </select>
+                    <span asp-validation-for="EventType" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" style="color: #0A0908; font-weight: bold;">Color</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        @foreach (var color in Model.ColorOptions)
+                        {
+                            <label style="cursor: pointer;">
+                                <input type="radio" asp-for="ColorCode" value="@color" style="display: none;" />
+                                <div style="width: 40px; height: 40px; background-color: @color; border-radius: 5px; border: 3px solid transparent;"
+                                     onclick="this.previousElementSibling.checked = true; document.querySelectorAll('.color-option').forEach(el => el.style.borderColor = 'transparent'); this.style.borderColor = '#0A0908';"
+                                     class="color-option"></div>
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label" style="color: #0A0908; font-weight: bold;">Notes</label>
+                <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Additional notes..."
+                          style="border: 2px solid #A9927D; border-radius: 5px;"></textarea>
+            </div>
+
+            <!-- Recurring Event Section -->
+            <div class="mb-3">
+                <div class="form-check">
+                    <input asp-for="IsRecurring" type="checkbox" class="form-check-input" id="recurringCheckbox"
+                           onchange="toggleRecurrence()" />
+                    <label asp-for="IsRecurring" class="form-check-label" style="color: #0A0908; font-weight: bold;">
+                        Recurring Event
+                    </label>
+                </div>
+            </div>
+
+            <!-- Recurrence Options (Hidden by default) -->
+            <div id="recurrenceOptions" style="display: none; border: 2px solid #A9927D; border-radius: 8px; padding: 20px; margin-bottom: 20px; background-color: #FFF9E6;">
+                <h5 style="color: #49111C; margin-bottom: 15px;">Recurrence Settings</h5>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="RecurrencePattern" class="form-label" style="color: #0A0908;">Pattern</label>
+                        <select asp-for="RecurrencePattern" asp-items="@(new SelectList(Model.RecurrencePatternOptions))"
+                                class="form-select" style="border: 2px solid #A9927D;">
+                            <option value="">-- Select Pattern --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="RecurrenceInterval" class="form-label" style="color: #0A0908;">Repeat Every</label>
+                        <input asp-for="RecurrenceInterval" type="number" min="1" class="form-control"
+                               style="border: 2px solid #A9927D;" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="color: #0A0908;">Days of Week (for Weekly pattern)</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Monday" /> Mon</label>
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Tuesday" /> Tue</label>
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Wednesday" /> Wed</label>
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Thursday" /> Thu</label>
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Friday" /> Fri</label>
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Saturday" /> Sat</label>
+                        <label><input type="checkbox" name="RecurrenceDaysOfWeek" value="Sunday" /> Sun</label>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="RecurrenceEndDate" class="form-label" style="color: #0A0908;">End Date</label>
+                        <input asp-for="RecurrenceEndDate" type="date" class="form-control"
+                               style="border: 2px solid #A9927D;" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MaxOccurrences" class="form-label" style="color: #0A0908;">Or Max Occurrences</label>
+                        <input asp-for="MaxOccurrences" type="number" min="1" class="form-control"
+                               style="border: 2px solid #A9927D;" placeholder="Leave blank for no limit" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <a asp-action="Index" class="btn" style="background-color: #A9927D; color: white;">Cancel</a>
+                <button type="submit" class="btn" style="background-color: #49111C; color: white;">
+                    Create Event
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Toggle recurrence options visibility
+        function toggleRecurrence() {
+            var checkbox = document.getElementById('recurringCheckbox');
+            var options = document.getElementById('recurrenceOptions');
+            options.style.display = checkbox.checked ? 'block' : 'none';
+        }
+
+        // Set default color selection
+        document.addEventListener('DOMContentLoaded', function() {
+            var defaultColor = '@Model.ColorCode';
+            var colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(function(option) {
+                if (option.previousElementSibling.value === defaultColor) {
+                    option.style.borderColor = '#0A0908';
+                }
+            });
+        });
+    </script>
+}
+```
+
+---
+
+**Commit message:**
+```
+16: Add CreateEvent view with form validation and recurring event options
