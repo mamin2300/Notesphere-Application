@@ -11,7 +11,7 @@ using Notesphere.Services.NotesphereDataAccessLayer;
 namespace Notesphere.Services.Migrations
 {
     [DbContext(typeof(NotesphereDbContext))]
-    [Migration("20251129221517_InitialMigration")]
+    [Migration("20251129223629_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
