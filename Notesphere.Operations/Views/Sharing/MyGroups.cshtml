@@ -4,30 +4,54 @@
     ViewData["Title"] = "My Groups";
 }
 
-<h2>My Groups</h2>
+<div class="ns-sharing-page">
+    <div class="ns-sharing-header">
+        <div>
+            <h2 class="ns-sharing-title">My Groups</h2>
+            <p class="ns-sharing-subtitle">
+                Manage your collaboration spaces for shared notes and discussions.
+            </p>
+        </div>
 
-<p>
-    <a asp-controller="Sharing" asp-action="CreateGroup" class="btn btn-primary">Create New Group</a>
-</p>
+        <div class="ns-sharing-actions">
+            <a asp-action="CreateGroup" class="ns-btn-primary">Create New Group</a>
+        </div>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Members</th>
-            <th>Your Role</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var g in Model)
-        {
-            <tr>
-                <td>@g.Name</td>
-                <td>@g.Description</td>
-                <td>@g.MemberCount</td>
-                <td>@g.Role</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="ns-sharing-card">
+        <table class="ns-sharing-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Members</th>
+                    <th>Your Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4">
+                            <span class="ns-help-text">
+                                You don't have any groups yet. Create one to start collaborating.
+                            </span>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var g in Model)
+                    {
+                        <tr>
+                            <td>@g.Name</td>
+                            <td>@g.Description</td>
+                            <td>@g.MemberCount</td>
+                            <td><span class="ns-pill-role">@g.Role</span></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,31 +1,59 @@
 ﻿@model List<Notesphere.Operations.Models.Sharing.SharedNoteListItemViewModel>
 
 @{
-    ViewData["Title"] = "Notes Shared With Me";
+    ViewData["Title"] = "Shared With Me";
 }
 
-<h2>Notes Shared With Me</h2>
+<div class="ns-sharing-page">
+    <div class="ns-sharing-header">
+        <div>
+            <h2 class="ns-sharing-title">Shared With Me</h2>
+            <p class="ns-sharing-subtitle">
+                Notes that other students or groups have shared with you.
+            </p>
+        </div>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Note Id</th>
-            <th>Shared By</th>
-            <th>Shared To</th>
-            <th>Type</th>
-            <th>Can Edit?</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.NoteId</td>
-                <td>@item.SharedBy</td>
-                <td>@item.SharedTo</td>
-                <td>@item.TargetType</td>
-                <td>@(item.CanEdit ? "Yes" : "No")</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="ns-sharing-card">
+        <table class="ns-sharing-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>From</th>
+                    <th>Group</th>
+                    <th>Can Edit?</th>
+                    <th>Shared On</th>
+                    <th>Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6">
+                            <span class="ns-help-text">
+                                Nothing has been shared with you yet.
+                            </span>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.NoteId</td>
+                            <td>@item.SharedBy</td>
+                            <td>@item.SharedTo</td>
+                            <td>@(item.CanEdit ? "Yes" : "No")</td>
+                            <td>@item.SharedNoteId</td>
+                            <td>@item.TargetType</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
