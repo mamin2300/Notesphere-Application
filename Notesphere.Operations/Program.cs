@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Notesphere.Operations.PlannerServices;
 using Notesphere.Services.DashboardRepository;
@@ -20,10 +21,24 @@ builder.Services.AddDbContext<NotesphereDbContext>(options =>
 builder.Services.AddScoped<INotesService, NotesRepository>();
 builder.Services.AddScoped<IPlannerService, PlannerRepository>();
 builder.Services.AddScoped<PlannerService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<ConflictDetector>();
 builder.Services.AddScoped<RecurrenceEngine>();
 builder.Services.AddScoped<IDashboardServices, DashboardRepository>();
 builder.Services.AddScoped<ISharingServices, SharingRepository>();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
+
+builder.Services.AddAuthorization();
+
+
 
 var app = builder.Build();
 
@@ -38,8 +53,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
 
+app.UseRouting();
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllerRoute(

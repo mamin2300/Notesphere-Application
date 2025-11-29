@@ -26,6 +26,7 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         public DbSet<NoteVersion> NoteVersions { get; set; }
         public DbSet<NoteExport> NoteExports { get; set; }
         public DbSet<NotePage> NotePages { get; set; }
+        public DbSet<StudentUser> StudentUser { get; set; } = null!;
 
 
         //Sharing.db sets
