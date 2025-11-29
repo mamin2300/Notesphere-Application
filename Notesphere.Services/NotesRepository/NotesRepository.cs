@@ -60,5 +60,7 @@ namespace Notesphere.Services.NotesRepository
             await _db.SaveChangesAsync();
         }
 
+        public async Task<List<StudentUser>> GetStudentUsers() =>
+            await _db.Set<StudentUser>().ToListAsync();
     }
 }

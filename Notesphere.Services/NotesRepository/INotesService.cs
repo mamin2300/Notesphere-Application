@@ -15,5 +15,6 @@ namespace Notesphere.Services.NotesRepository
         Task<List<Tag>> GetAllTags();
         Task SaveNoteVersion(NoteVersion Version);
         Task AddTagToNote(NoteTag join);
+        Task<List<StudentUser>> GetStudentUsers();
     }
 }

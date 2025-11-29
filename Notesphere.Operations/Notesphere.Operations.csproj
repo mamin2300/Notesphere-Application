@@ -23,12 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\NotesController\" />
     <Folder Include="Data\" />
     <Folder Include="Models\Productivity\" />
     <Folder Include="Models\Sharing\" />
     <Folder Include="Models\Notes\" />
-    <Folder Include="Views\Notes\" />
   </ItemGroup>
 
 </Project>
