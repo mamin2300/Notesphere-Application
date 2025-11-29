@@ -2,6 +2,8 @@
 using Notesphere.Entities.DashboardModels;
 using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
+using Notesphere.Entities.SharingModels;
+
 
 namespace Notesphere.Services.NotesphereDataAccessLayer
 {
@@ -24,6 +26,13 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         public DbSet<NoteVersion> NoteVersions { get; set; }
         public DbSet<NoteExport> NoteExports { get; set; }
         public DbSet<NotePage> NotePages { get; set; }
+
+
+        //Sharing.db sets
+        public DbSet<GroupSpace> GroupSpaces { get; set; }
+        public DbSet<GroupMember> GroupMembers { get; set; }
+        public DbSet<SharedNote> SharedNotes { get; set; }
+        public DbSet<NoteComment> NoteComments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
