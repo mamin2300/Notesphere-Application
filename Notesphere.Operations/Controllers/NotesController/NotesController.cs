@@ -51,13 +51,15 @@ namespace Notesphere.Operations.Controllers
         {
             await PopulateStudentUserDropDown();
             await PopulateTemplates();
-            return View();
+
+            return View(new Note()); 
         }
+
 
         // POST: Notes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId,CreatedAt,UpdatedAt")] Note note)
+        public async Task<IActionResult> Create([Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId")] Note note)
         {
             if (ModelState.IsValid)
             {

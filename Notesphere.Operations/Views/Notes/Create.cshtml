@@ -1,62 +1,110 @@
 ﻿@model Notesphere.Entities.NotesModels.Note
-
+@using Notesphere.Entities.NotesModels
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Note";
+    var templates = ViewBag.Templates as List<NoteTemplate> ?? new List<NoteTemplate>();
 }
 
-<h1>Create</h1>
+<link rel="stylesheet" href="~/css/Notes.css" />
 
-<h4>Note</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StudentUserId" class="control-label"></label>
-                <select asp-for="StudentUserId" class ="form-control" asp-items="ViewBag.StudentUserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsFavorite" /> @Html.DisplayNameFor(model => model.IsFavorite)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="TemplateId" class="control-label"></label>
-                <input asp-for="TemplateId" class="form-control" />
-                <span asp-validation-for="TemplateId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="note-create-wrapper">
+
+    <h1 class="note-title-heading">Create a new note</h1>
+
+    <!-- Choose Template Button -->
+    <button type="button" class="open-template-panel-btn">Choose template</button>
+
+    <!-- Slide-in Overlay -->
+    <div id="templateOverlay" class="template-overlay"></div>
+
+    <!-- Slide-in Template Panel -->
+    <div id="templatePanel" class="template-panel">
+        <div class="panel-header">
+            <h3>Select a Template</h3>
+            <button type="button" class="close-template-panel-btn">×</button>
+        </div>
+
+        <div class="panel-content">
+            @foreach (var t in templates)
+            {
+                <div class="panel-template-card" onclick="chooseTemplate(@t.Id, '@t.CssKey')">
+                    <div class="preview template-@t.CssKey"></div>
+                    <h4>@t.Name</h4>
+                    <p>@t.Description</p>
+                </div>
+            }
+        </div>
     </div>
+
+    <form asp-action="Create" method="post">
+        <!-- Hidden Template ID -->
+        <input type="hidden" name="TemplateId" id="TemplateId" />
+
+        <!-- Hidden Dates -->
+        <input type="hidden" asp-for="CreatedAt" value="@DateTime.Now" />
+        <input type="hidden" asp-for="UpdatedAt" value="@DateTime.Now" />
+
+        <div class="note-form">
+
+            <!-- Owner Dropdown -->
+            <label>Select Owner</label>
+            @Html.DropDownListFor(m => m.StudentUserId, (SelectList)ViewData["StudentUserId"], "", new { @class = "owner-dd" })
+
+            <!-- Title -->
+            <input asp-for="Title" class="note-title-input" placeholder="Note title..." />
+
+            <!-- NOTE EDITOR -->
+            <textarea asp-for="Content" class="note-editor" id="noteEditor"
+                      placeholder="Start typing your note here..."></textarea>
+
+            <!-- Favorite -->
+            <label class="favorite-row">
+                <input asp-for="IsFavorite" type="checkbox" />
+                Mark as Favorite
+            </label>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-create">Create Note</button>
+            <a asp-action="Index" class="back-link">Back to list</a>
+
+        </div>
+
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    const panel = document.getElementById('templatePanel');
+    const overlay = document.getElementById('templateOverlay');
+    const editor = document.getElementById('noteEditor');
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    document.querySelector('.open-template-panel-btn')
+        .addEventListener('click', () => {
+            panel.classList.add('open');
+            overlay.classList.add('show');
+        });
+
+    document.querySelector('.close-template-panel-btn')
+        .addEventListener('click', () => {
+            panel.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+
+    overlay.addEventListener('click', () => {
+        panel.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+
+    // Called when choosing a template
+    function chooseTemplate(id, cssKey) {
+
+        // Save value
+        document.getElementById('TemplateId').value = id;
+
+        // Apply CSS class to editor
+        editor.className = "note-editor template-style-" + cssKey;
+
+        // Close panel
+        panel.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+</script>
