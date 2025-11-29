@@ -31,8 +31,48 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
             // composite key for join table
             modelBuilder.Entity<NoteTag>()
                 .HasKey(nt => new { nt.NoteId, nt.TagId });
-        }
         
+            modelBuilder.Entity<NoteTemplate>().HasData(
+                new NoteTemplate
+                {
+                    Id = 1,
+                    Name = "Classic lined",
+                    Description = "Simple ruled notebook page",
+                    CssKey = "lined",
+                    DefaultContent = "",
+                    IsSystemTemplate = true
+                },
+                new NoteTemplate
+                {
+                    Id = 2,
+                    Name = "Dot grid",
+                    Description = "For bullet journaling and sketches",
+                    CssKey = "dotgrid",
+                    DefaultContent = "",
+                    IsSystemTemplate = true
+                },
+                new NoteTemplate
+                {
+                    Id = 3,
+                    Name = "Cornell notes",
+                    Description = "Cue, notes, and summary layout",
+                    CssKey = "cornell",
+                    DefaultContent = "Topic:\nDate:\n\n[Main notes]\n\nSummary:",
+                    IsSystemTemplate = true
+                },
+                new NoteTemplate
+                {
+                    Id = 4,
+                    Name = "Minimal blank",
+                    Description = "Plain, no guides",
+                    CssKey = "blank",
+                    DefaultContent = "",
+                    IsSystemTemplate = true
+                }
+            );
+        }
+
+
         //Planner.db sets
         public DbSet<Event> Events { get; set; }
         public DbSet<RecurringEvent> RecurringEvents { get; set; }

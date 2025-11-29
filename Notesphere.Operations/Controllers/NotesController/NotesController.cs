@@ -14,11 +14,18 @@ namespace Notesphere.Operations.Controllers
             _notesService = notesService;
         }
 
-        // helper: populate dropdown
+        // Helper: populate StudentUser dropdown
         private async Task PopulateStudentUserDropDown(object? selectedId = null)
         {
             var users = await _notesService.GetStudentUsers();
             ViewData["StudentUserId"] = new SelectList(users, "Id", "Email", selectedId);
+        }
+
+        // Helper: populate templates list
+        private async Task PopulateTemplates(object? selectedId = null)
+        {
+            var templates = await _notesService.GetTemplatesAsync();
+            ViewBag.Templates = templates;
         }
 
         // GET: Notes
@@ -43,6 +50,7 @@ namespace Notesphere.Operations.Controllers
         public async Task<IActionResult> Create()
         {
             await PopulateStudentUserDropDown();
+            await PopulateTemplates();
             return View();
         }
 
@@ -58,6 +66,7 @@ namespace Notesphere.Operations.Controllers
             }
 
             await PopulateStudentUserDropDown(note.StudentUserId);
+            await PopulateTemplates(note.TemplateId);
             return View(note);
         }
 
@@ -70,6 +79,8 @@ namespace Notesphere.Operations.Controllers
             if (note == null) return NotFound();
 
             await PopulateStudentUserDropDown(note.StudentUserId);
+            await PopulateTemplates(note.TemplateId);
+
             return View(note);
         }
 
@@ -87,6 +98,8 @@ namespace Notesphere.Operations.Controllers
             }
 
             await PopulateStudentUserDropDown(note.StudentUserId);
+            await PopulateTemplates(note.TemplateId);
+
             return View(note);
         }
 

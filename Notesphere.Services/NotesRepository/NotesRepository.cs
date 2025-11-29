@@ -42,8 +42,18 @@ namespace Notesphere.Services.NotesRepository
             }
         }
 
-        public async Task<List<NoteTemplate>> GetTemplates() =>
-            await _db.NoteTemplates.ToListAsync();
+        public async Task<List<NoteTemplate>> GetTemplatesAsync()
+        {
+            return await _db.NoteTemplates
+                .OrderBy(t => t.Name)
+                .ToListAsync();
+        }
+
+        public async Task<NoteTemplate?> GetTemplateByIdAsync(int id)
+        {
+            return await _db.NoteTemplates.FirstOrDefaultAsync(t => t.Id == id);
+        }
+
 
         public async Task<List<Tag>> GetAllTags() =>
             await _db.Tags.ToListAsync();
