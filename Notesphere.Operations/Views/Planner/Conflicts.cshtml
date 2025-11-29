@@ -1,0 +1,205 @@
+﻿@model Notesphere.Operations.Models.Planner.ConflictViewModel
+@{
+    ViewData["Title"] = "Scheduling Conflicts";
+}
+
+<div class="conflicts-container" style="background-color: #F2E4F3; min-height: 100vh; padding: 20px;">
+
+    <!-- Header -->
+    <div class="conflicts-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #0A0908; font-weight: bold;">SCHEDULING CONFLICTS</h2>
+        <a asp-action="Index" class="btn" style="background-color: #49111C; color: white;">
+            ← Back to Planner
+        </a>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="summary-card" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <div class="row">
+            <div class="col-md-8">
+                <h4 style="color: #49111C;">@Model.GetSummaryMessage()</h4>
+                <p style="color: #666; margin-bottom: 0;">Report generated: @Model.GeneratedAt.ToString("MMM dd, yyyy h:mm tt")</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div style="font-size: 3em; color: @(Model.HasSevereConflicts() ? "#EF4444" : "#10B981");">
+                    @Model.TotalConflicts
+                </div>
+                <div style="color: #666;">Total Conflicts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-card" style="background-color: white; border-radius: 8px; padding: 20px; text-align: center; border-left: 5px solid #10B981;">
+                <div style="font-size: 2em; color: #10B981; font-weight: bold;">@Model.MinorConflicts</div>
+                <div style="color: #666;">Minor</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card" style="background-color: white; border-radius: 8px; padding: 20px; text-align: center; border-left: 5px solid #F59E0B;">
+                <div style="font-size: 2em; color: #F59E0B; font-weight: bold;">@Model.ModerateConflicts</div>
+                <div style="color: #666;">Moderate</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card" style="background-color: white; border-radius: 8px; padding: 20px; text-align: center; border-left: 5px solid #EF4444;">
+                <div style="font-size: 2em; color: #EF4444; font-weight: bold;">@Model.SevereConflicts</div>
+                <div style="color: #666;">Severe</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show Resolved Toggle -->
+    <div style="background-color: white; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="showResolvedCheck"
+                   @(Model.ShowResolved ? "checked" : "")
+                   onchange="window.location.href='@Url.Action("Conflicts", new { showResolved = "!Model.ShowResolved" })';" />
+            <label class="form-check-label" for="showResolvedCheck" style="color: #0A0908;">
+                Show resolved conflicts
+            </label>
+        </div>
+    </div>
+
+    <!-- Conflicts List -->
+    @if (Model.Conflicts.Any())
+    {
+        <div class="conflicts-list">
+            @foreach (var conflict in Model.Conflicts.OrderByDescending(c => c.ConflictSeverity).ThenBy(c => c.ConflictStartTime))
+            {
+                var severityColor = conflict.ConflictSeverity switch
+                {
+                    "Severe" => "#EF4444",
+                    "Moderate" => "#F59E0B",
+                    _ => "#10B981"
+                };
+
+                <div class="conflict-card" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; border-left: 5px solid @severityColor;">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Severity Badge -->
+                            <span class="badge" style="background-color: @severityColor; color: white; margin-bottom: 10px;">
+                                @conflict.ConflictSeverity.ToUpper()
+                            </span>
+
+                            @if (conflict.IsResolved)
+                            {
+                                <span class="badge" style="background-color: #10B981; color: white; margin-left: 5px;">
+                                    ✓ RESOLVED
+                                </span>
+                            }
+
+                            <!-- Conflict Description -->
+                            <h5 style="color: #0A0908; margin-top: 10px;">
+                                @conflict.FirstEvent?.Title vs @conflict.SecondEvent?.Title
+                            </h5>
+
+                            <!-- Time Details -->
+                            <div style="color: #666; margin-top: 10px;">
+                                <div>
+                                    <strong>Date:</strong> @conflict.ConflictStartTime.ToString("dddd, MMMM dd, yyyy")
+                                </div>
+                                <div>
+                                    <strong>Overlap:</strong>
+                                    @conflict.ConflictStartTime.ToString("h:mm tt") - @conflict.ConflictEndTime.ToString("h:mm tt")
+                                    (@conflict.GetOverlapMinutes() minutes)
+                                </div>
+                            </div>
+
+                            <!-- Event Details -->
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div style="padding: 10px; background-color: #F2E4F3; border-radius: 5px;">
+                                        <strong style="color: @conflict.FirstEvent?.ColorCode;">Event 1:</strong> @conflict.FirstEvent?.Title
+                                        <br />
+                                        <small>@conflict.FirstEvent?.StartTime.ToString("h:mm tt") - @conflict.FirstEvent?.EndTime.ToString("h:mm tt")</small>
+                                        @if (!string.IsNullOrEmpty(conflict.FirstEvent?.Location))
+                                        {
+                                            <br />
+                                
+                                            <small>📍 @conflict.FirstEvent.Location</small>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div style="padding: 10px; background-color: #F2E4F3; border-radius: 5px;">
+                                        <strong style="color: @conflict.SecondEvent?.ColorCode;">Event 2:</strong> @conflict.SecondEvent?.Title
+                                        <br />
+                                        <small>@conflict.SecondEvent?.StartTime.ToString("h:mm tt") - @conflict.SecondEvent?.EndTime.ToString("h:mm tt")</small>
+                                        @if (!string.IsNullOrEmpty(conflict.SecondEvent?.Location))
+                                        {
+                                            <br />
+                                
+                                            <small>📍 @conflict.SecondEvent.Location</small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Suggestions -->
+                            @if (conflict.GetResolutionSuggestions().Any())
+                            {
+                                <div style="margin-top: 15px; padding: 10px; background-color: #FFF9E6; border-radius: 5px;">
+                                    <strong>💡 Suggestions:</strong>
+                                    <ul style="margin: 5px 0 0 0; padding-left: 20px;">
+                                        @foreach (var suggestion in conflict.GetResolutionSuggestions().Take(2))
+                                        {
+                                            <li style="font-size: 0.9em;">@suggestion</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="col-md-4 text-end">
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <a asp-action="EditEvent" asp-route-id="@conflict.FirstEventId"
+                                   class="btn btn-sm" style="background-color: #A9927D; color: white;">
+                                    Edit Event 1
+                                </a>
+                                <a asp-action="EditEvent" asp-route-id="@conflict.SecondEventId"
+                                   class="btn btn-sm" style="background-color: #A9927D; color: white;">
+                                    Edit Event 2
+                                </a>
+
+                                @if (!conflict.IsResolved)
+                                {
+                                    <form asp-action="ResolveConflict" asp-route-id="@conflict.ConflictId" method="post">
+                                        <button type="submit" class="btn btn-sm" style="background-color: #10B981; color: white; width: 100%;">
+                                            Mark as Resolved
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- No Conflicts Message -->
+        <div style="background-color: white; border-radius: 8px; padding: 40px; text-align: center;">
+            <div style="font-size: 4em; color: #10B981;">✓</div>
+            <h4 style="color: #0A0908; margin-top: 20px;">No Conflicts Found!</h4>
+            <p style="color: #666;">Your schedule is perfectly organized with no overlapping events.</p>
+            <a asp-action="Index" class="btn" style="background-color: #49111C; color: white; margin-top: 20px;">
+                Back to Planner
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss success messages
+        setTimeout(function() {
+            $('.alert-success').fadeOut('slow');
+        }, 3000);
+    </script>
+}
+
