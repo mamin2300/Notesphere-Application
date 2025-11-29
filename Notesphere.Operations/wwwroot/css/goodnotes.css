@@ -1,0 +1,231 @@
+﻿:root {
+    --gn-bg: #F2F4F3;
+    --gn-sidebar-bg: #0A0908;
+    --gn-toolbar-bg: #0A0908;
+    --gn-toolbar-accent: #49111C;
+    --gn-toolbar-accent-soft: #A9927D;
+    --gn-toolbar-hover: #5E503F;
+    --gn-page-bg: #ffffff;
+}
+
+/* WRAPPER LAYOUT ------------------------------------------------------ */
+
+.gn-editor-wrapper {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    height: calc(100vh - 80px);
+    margin-top: 10px;
+    background: var(--gn-bg);
+    overflow: hidden;
+}
+
+/* SIDEBAR ------------------------------------------------------------- */
+
+.gn-sidebar {
+    background: var(--gn-sidebar-bg);
+    color: #F2F4F3;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gn-sidebar-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.8;
+    margin-bottom: 8px;
+}
+
+#pageList {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 4px;
+}
+
+/* Page thumbnail “cards” */
+.gn-thumb {
+    padding: 10px 8px;
+    border-radius: 9px;
+    background: rgba(242, 244, 243, 0.05);
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid transparent;
+}
+
+    .gn-thumb span {
+        opacity: 0.9;
+    }
+
+    .gn-thumb:hover {
+        background: rgba(242, 244, 243, 0.12);
+        border-color: rgba(242, 244, 243, 0.25);
+    }
+
+.gn-thumb-active {
+    background: #F2F4F3;
+    color: #0A0908;
+    font-weight: 600;
+}
+
+/* Add page button */
+.gn-add-page {
+    margin-top: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px dashed rgba(242, 244, 243, 0.55);
+    background: transparent;
+    color: #F2F4F3;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+    .gn-add-page:hover {
+        background: rgba(242, 244, 243, 0.12);
+    }
+
+/* MAIN AREA ----------------------------------------------------------- */
+
+.gn-main {
+    position: relative;
+    background: radial-gradient(circle at top left, #A9927D20, #F2F4F3 60%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Toolbar (floating GoodNotes 6 style) ------------------------------- */
+
+.gn-toolbar {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gn-toolbar-bg);
+    padding: 8px 12px;
+    border-radius: 999px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 10;
+}
+
+.gn-tool-btn {
+    background: var(--gn-toolbar-accent);
+    border-radius: 999px;
+    border: none;
+    color: #F2F4F3;
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.18s ease;
+}
+
+    .gn-tool-btn:hover {
+        background: var(--gn-toolbar-hover);
+    }
+
+    .gn-tool-btn.gn-tool-active {
+        background: var(--gn-toolbar-accent-soft);
+        color: #0A0908;
+        font-weight: 700;
+    }
+
+.divider {
+    width: 1px;
+    height: 26px;
+    background: rgba(242, 244, 243, 0.25);
+    margin: 0 4px;
+}
+
+/* Brush size slider */
+#brushSize {
+    accent-color: var(--gn-toolbar-accent-soft);
+}
+
+.gn-thickness-label {
+    color: #F2F4F3;
+    font-size: 0.8rem;
+    margin-right: 4px;
+}
+
+/* Color circles */
+.gn-color-picker {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .gn-color-picker .color {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 1px solid rgba(0,0,0,0.2);
+        cursor: pointer;
+    }
+
+/* CANVAS --------------------------------------------------------------- */
+
+#noteCanvas {
+    background: var(--gn-page-bg);
+    box-shadow: 0 18px 55px rgba(0,0,0,0.25);
+    border-radius: 14px;
+    max-width: 900px;
+    max-height: 650px;
+    width: 80%;
+    height: 80%;
+    touch-action: none; /* important for drawing on touch devices */
+}
+
+/* Save button */
+.gn-save-btn {
+    position: absolute;
+    bottom: 18px;
+    right: 26px;
+    border-radius: 999px;
+    border: none;
+    background: var(--gn-toolbar-accent);
+    color: #F2F4F3;
+    padding: 9px 18px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+    .gn-save-btn:hover {
+        background: var(--gn-toolbar-hover);
+    }
+
+/* RESPONSIVE ----------------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .gn-editor-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .gn-sidebar {
+        display: none;
+    }
+
+    .gn-toolbar {
+        top: 10px;
+        transform: translateX(-50%) scale(0.9);
+    }
+
+    #noteCanvas {
+        width: 94%;
+        height: 75%;
+    }
+}

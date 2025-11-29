@@ -72,5 +72,72 @@ namespace Notesphere.Services.NotesRepository
 
         public async Task<List<StudentUser>> GetStudentUsers() =>
             await _db.Set<StudentUser>().ToListAsync();
+
+
+        public async Task<List<NotePage>> GetPagesByNoteId(int noteId)
+        {
+            return await _db.NotePages
+                .Where(p => p.NoteId == noteId)
+                .OrderBy(p => p.PageNumber)
+                .ToListAsync();
+        }
+
+        public async Task SavePageImage(int noteId, int pageNumber, string imageData)
+        {
+            var page = await _db.NotePages
+                .FirstOrDefaultAsync(p => p.NoteId == noteId && p.PageNumber == pageNumber);
+
+            if (page == null)
+            {
+                page = new NotePage
+                {
+                    NoteId = noteId,
+                    PageNumber = pageNumber,
+                    ImageData = imageData,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                _db.NotePages.Add(page);
+            }
+            else
+            {
+                page.ImageData = imageData;
+                page.UpdatedAt = DateTime.UtcNow;
+                _db.NotePages.Update(page);
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<int> AddNewPage(int noteId)
+        {
+            int nextPage = await _db.NotePages
+                .Where(p => p.NoteId == noteId)
+                .CountAsync() + 1;
+
+            _db.NotePages.Add(new NotePage
+            {
+                NoteId = noteId,
+                PageNumber = nextPage,
+                ImageData = "",
+                UpdatedAt = DateTime.UtcNow
+            });
+            await _db.SaveChangesAsync();
+
+            return nextPage;
+        }
+
+        public async Task DeletePage(int noteId, int pageNumber)
+        {
+            var page = await _db.NotePages
+                .FirstOrDefaultAsync(p => p.NoteId == noteId && p.PageNumber == pageNumber);
+
+            if (page != null)
+            {
+                _db.NotePages.Remove(page);
+                await _db.SaveChangesAsync();
+            }
+        }
+
+
     }
 }

@@ -23,6 +23,8 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         public DbSet<NoteTemplate> NoteTemplates { get; set; }
         public DbSet<NoteVersion> NoteVersions { get; set; }
         public DbSet<NoteExport> NoteExports { get; set; }
+        public DbSet<NotePage> NotePages { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

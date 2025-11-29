@@ -124,5 +124,40 @@ namespace Notesphere.Operations.Controllers
             await _notesService.DeleteNote(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Editor(int id)
+        {
+            var note = await _notesService.GetNoteById(id);
+            if (note == null) return NotFound();
+
+            var pages = await _notesService.GetPagesByNoteId(id);
+            ViewBag.Pages = pages;
+
+            return View(note);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePage(int noteId, int pageNumber, string imageData)
+        {
+            await _notesService.SavePageImage(noteId, pageNumber, imageData);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPage(int noteId)
+        {
+            int newPage = await _notesService.AddNewPage(noteId);
+            return Json(new { pageNumber = newPage });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePage(int noteId, int pageNumber)
+        {
+            await _notesService.DeletePage(noteId, pageNumber);
+            return Ok();
+        }
+
+
+
     }
 }
