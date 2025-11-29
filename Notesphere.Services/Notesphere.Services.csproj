@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="ProductivityRepository\" />
-    <Folder Include="SharingRepository\" />
   </ItemGroup>
 
 </Project>
