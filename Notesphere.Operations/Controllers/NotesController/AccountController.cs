@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Notesphere.Entities.NotesModels;
 using Notesphere.Services.NotesRepository;
+using Notesphere.Operations.Models.Notes;
 
 namespace Notesphere.Operations.Controllers
 {
@@ -19,34 +21,34 @@ namespace Notesphere.Operations.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
 
         // POST: /Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(string name, string email, string password, string confirmPassword)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (password != confirmPassword)
-            {
-                ModelState.AddModelError("", "Passwords do not match.");
-            }
-
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(model);
             }
 
             try
             {
-                var user = await _userService.RegisterAsync(name, email, password);
+                // create StudentUser via your service (handles hashing etc.)
+                StudentUser user = await _userService.RegisterAsync(
+                    model.Name,
+                    model.Email,
+                    model.Password);
+
                 await SignInUser(user);
                 return RedirectToAction("Index", "Dashboard");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View();
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
             }
         }
 
@@ -54,26 +56,29 @@ namespace Notesphere.Operations.Controllers
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
         // POST: /Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string email, string password, string? returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var user = await _userService.GetByEmailAsync(email);
-            if (user == null || !_userService.VerifyPassword(user, password))
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userService.GetByEmailAsync(model.Email);
+
+            if (user == null || !_userService.VerifyPassword(user, model.Password))
             {
-                ModelState.AddModelError("", "Invalid email or password.");
-                return View();
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                return View(model);
             }
 
             await SignInUser(user);
 
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                return Redirect(returnUrl);
+            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                return Redirect(model.ReturnUrl);
 
             return RedirectToAction("Index", "Dashboard");
         }
@@ -87,12 +92,12 @@ namespace Notesphere.Operations.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        private async Task SignInUser(Notesphere.Entities.NotesModels.StudentUser user)
+        private async Task SignInUser(StudentUser user)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Name, user.Name ?? user.Email),
                 new Claim(ClaimTypes.Email, user.Email)
             };
 

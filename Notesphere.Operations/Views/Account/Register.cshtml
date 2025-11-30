@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Notesphere.Operations.Models.Notes.RegisterViewModel
+
+@{
     ViewData["Title"] = "Register";
 }
 <link rel="stylesheet" href="~/css/Notes.css" />
@@ -7,24 +9,30 @@
     <h1 class="ns-note-create-title">Create account</h1>
 
     <form asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+
         <div class="ns-owner-row">
             <label class="ns-label">Name</label>
-            <input name="name" class="ns-input" required />
+            <input asp-for="Name" class="ns-input" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <div class="ns-owner-row">
             <label class="ns-label">Email</label>
-            <input name="email" type="email" class="ns-input" required />
+            <input asp-for="Email" class="ns-input" />
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="ns-owner-row">
             <label class="ns-label">Password</label>
-            <input name="password" type="password" class="ns-input" required />
+            <input asp-for="Password" class="ns-input" type="password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
         </div>
 
         <div class="ns-owner-row">
             <label class="ns-label">Confirm password</label>
-            <input name="confirmPassword" type="password" class="ns-input" required />
+            <input asp-for="ConfirmPassword" class="ns-input" type="password" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
         </div>
 
         <div class="ns-actions-row">
@@ -35,3 +43,7 @@
         @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

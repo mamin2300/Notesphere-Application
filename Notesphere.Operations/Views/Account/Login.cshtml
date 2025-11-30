@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Notesphere.Operations.Models.Notes.LoginViewModel
+
+@{
     ViewData["Title"] = "Login";
 }
 <link rel="stylesheet" href="~/css/Notes.css" />
@@ -7,16 +9,19 @@
     <h1 class="ns-note-create-title">Log in</h1>
 
     <form asp-action="Login" method="post">
-        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        @Html.AntiForgeryToken()
+        <input asp-for="ReturnUrl" type="hidden" />
 
         <div class="ns-owner-row">
             <label class="ns-label">Email</label>
-            <input name="email" type="email" class="ns-input" required />
+            <input asp-for="Email" class="ns-input" />
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="ns-owner-row">
             <label class="ns-label">Password</label>
-            <input name="password" type="password" class="ns-input" required />
+            <input asp-for="Password" class="ns-input" type="password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
         </div>
 
         <div class="ns-actions-row">
@@ -27,3 +32,7 @@
         @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

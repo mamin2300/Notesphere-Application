@@ -48,39 +48,42 @@ namespace Notesphere.Operations.Controllers
         }
 
         // GET: Notes/Create
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        public IActionResult Create()
         {
-            return View();
+            // Use the Note entity directly as the model
+            var note = new Note();
+            return View(note);
         }
 
         // POST: Notes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Content,IsFavorite,TemplateId")] Note note)
+        public async Task<IActionResult> Create(Note note)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim == null)
+            if (!ModelState.IsValid)
             {
-                // not logged in, send to login
+                return View(note);
+            }
+
+            // Get logged-in user ID
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
                 return RedirectToAction("Login", "Account");
             }
 
-            note.StudentUserId = int.Parse(userIdClaim);
-            note.CreatedAt = DateTime.Now;
-            note.UpdatedAt = DateTime.Now;
+            note.StudentUserId = int.Parse(userIdString);
 
-            if (ModelState.IsValid)
-            {
-                await _notesService.AddNote(note);
-                return RedirectToAction(nameof(Index));
-            }
+            // Save the note
+            await _notesService.AddNote(note);
 
-            return View(note);
+            // Now redirect straight to the Editor for this note
+            return RedirectToAction("Editor", new { id = note.Id });
         }
 
-
-
-        // GET: Notes/Edit/5
+        // GET: Notes/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -94,7 +97,7 @@ namespace Notesphere.Operations.Controllers
             return View(note);
         }
 
-        // POST: Notes/Edit/5
+        // POST: Notes/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId,CreatedAt,UpdatedAt")] Note note)
@@ -113,7 +116,7 @@ namespace Notesphere.Operations.Controllers
             return View(note);
         }
 
-        // GET: Notes/Delete/5
+        // GET: Notes/Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -124,7 +127,7 @@ namespace Notesphere.Operations.Controllers
             return View(note);
         }
 
-        // POST: Notes/Delete/5
+        // POST: Notes/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

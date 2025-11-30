@@ -26,7 +26,6 @@
     <Folder Include="Data\" />
     <Folder Include="Models\Dashboard\NewFolder\" />
     <Folder Include="Models\Productivity\" />
-    <Folder Include="Models\Notes\" />
   </ItemGroup>
 
 </Project>

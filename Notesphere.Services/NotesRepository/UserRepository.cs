@@ -6,11 +6,11 @@ using Notesphere.Services.NotesphereDataAccessLayer;
 
 namespace Notesphere.Services.NotesRepository
 {
-    public class UserService : IUserService
+    public class UserRepsoitory : IUserService
     {
         private readonly NotesphereDbContext _db;
 
-        public UserService(NotesphereDbContext db)
+        public UserRepsoitory(NotesphereDbContext db)
         {
             _db = db;
         }

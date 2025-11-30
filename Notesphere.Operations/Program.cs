@@ -21,7 +21,7 @@ builder.Services.AddDbContext<NotesphereDbContext>(options =>
 builder.Services.AddScoped<INotesService, NotesRepository>();
 builder.Services.AddScoped<IPlannerService, PlannerRepository>();
 builder.Services.AddScoped<PlannerService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserRepsoitory>();
 
 builder.Services.AddScoped<ConflictDetector>();
 builder.Services.AddScoped<RecurrenceEngine>();

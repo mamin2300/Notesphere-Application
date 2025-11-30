@@ -54,10 +54,11 @@
             <div class="ns-topbar-right">
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="ns-auth-inline-form">
-                        <button type="submit" class="ns-chip ns-chip-active">
-                            @User.Identity?.Name · Logout
-                        </button>
+                    <span class="ns-chip">@User.Identity.Name</span>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="ns-chip ns-chip-active">Logout</button>
                     </form>
                 }
                 else
@@ -65,10 +66,9 @@
                     <a asp-controller="Account" asp-action="Login" class="ns-chip ns-chip-active">
                         Login
                     </a>
-                    @* optional: show Sign up too *@
-                    @* <a asp-controller="Account" asp-action="Register" class="ns-chip">Sign up</a> *@
                 }
             </div>
+
 
         </header>
 

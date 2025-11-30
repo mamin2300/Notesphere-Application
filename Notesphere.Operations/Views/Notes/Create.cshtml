@@ -10,14 +10,7 @@
     <h1 class="ns-note-create-title">Create a new note</h1>
 
     <form asp-action="Create" method="post">
-        <div class="ns-owner-row">
-            <label class="ns-label">Select Owner</label>
-            <select asp-for="StudentUserId"
-                    asp-items="ViewBag.StudentUserId"
-                    class="ns-input">
-            </select>
-        </div>
-
+       
         <div class="ns-title-row">
             <input asp-for="Title"
                    class="ns-input"
