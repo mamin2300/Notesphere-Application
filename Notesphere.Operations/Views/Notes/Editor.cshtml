@@ -4,6 +4,15 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Notebook Editor";
+
+    string templateClass = Model.TemplateId switch
+    {
+        1 => "page-template-lined",
+        2 => "page-template-dotted",
+        3 => "page-template-boxed",
+        _ => "page-template-blank"
+    };
+
     var pages = ViewBag.Pages as List<NotePage> ?? new List<NotePage>();
 }
 
@@ -11,42 +20,44 @@
 
 <div class="gn-editor-wrapper">
 
-    <!-- SIDEBAR WITH PAGE THUMBNAILS -->
+    <!-- SIDEBAR -->
     <div class="gn-sidebar">
         <h3 class="gn-sidebar-title">Pages</h3>
 
         <div id="pageList">
             @foreach (var p in pages)
             {
-                <div class="gn-thumb" onclick="loadPage(@p.PageNumber)">
+                <div class="gn-thumb"
+                     data-page="@p.PageNumber"
+                     data-image="@p.ImageData"
+                     onclick="loadPage(@p.PageNumber)">
                     <span>Page @p.PageNumber</span>
                 </div>
             }
         </div>
 
-        <button class="gn-add-page" onclick="addNewPage()">+ Add Page</button>
+        <button class="gn-add-page" type="button" onclick="addNewPage()">+ Add Page</button>
     </div>
 
-
-    <!-- MAIN CANVAS AREA -->
+    <!-- MAIN -->
     <div class="gn-main">
 
-        <!-- FLOATING TOOLBAR -->
+        <!-- TOOLBAR -->
         <div class="gn-toolbar">
-
-            <button onclick="selectTool('pen')" id="tool_pen" class="gn-tool-btn">✎</button>
-            <button onclick="selectTool('highlighter')" id="tool_highlighter" class="gn-tool-btn">🖍</button>
-            <button onclick="selectTool('eraser')" id="tool_eraser" class="gn-tool-btn">🩹</button>
+            <button type="button" onclick="selectTool('pen')" id="tool_pen" class="gn-tool-btn">✎</button>
+            <button type="button" onclick="selectTool('highlighter')" id="tool_highlighter" class="gn-tool-btn">🖍</button>
+            <button type="button" onclick="selectTool('eraser')" id="tool_eraser" class="gn-tool-btn">🩹</button>
+            <button type="button" onclick="selectTool('text')" id="tool_text" class="gn-tool-btn">T</button>
 
             <span class="divider"></span>
 
-            <button onclick="undoCanvas()" class="gn-tool-btn">↶</button>
-            <button onclick="redoCanvas()" class="gn-tool-btn">↷</button>
+            <button type="button" onclick="undoCanvas()" class="gn-tool-btn">↶</button>
+            <button type="button" onclick="redoCanvas()" class="gn-tool-btn">↷</button>
 
             <span class="divider"></span>
 
             <label class="gn-thickness-label">Size</label>
-            <input type="range" id="brushSize" min="2" max="30" value="6" />
+            <input type="range" id="brushSize" min="4" max="45" value="12" />
 
             <span class="divider"></span>
 
@@ -57,19 +68,29 @@
                 <div class="color" style="background:#5E503F;" onclick="setColor('#5E503F')"></div>
                 <div class="color" style="background:#F2F4F3;" onclick="setColor('#F2F4F3')"></div>
             </div>
-
         </div>
 
-        <!-- CANVAS -->
-        <canvas id="noteCanvas"></canvas>
+        <!-- PAGE (canvas + textarea inside) -->
+        <div class="gn-main-inner">
+            <div id="gn-page" class="gn-page @templateClass">
+                <canvas id="noteCanvas"></canvas>
 
-        <button class="gn-save-btn" onclick="saveCurrentPage()">Save Page</button>
+                <!-- TEXT BOX INSIDE PAGE -->
+                <textarea id="noteText"
+                          class="gn-page-text"
+                          placeholder="Type your note here...">@Model.Content</textarea>
+            </div>
+        </div>
+
+        <button class="gn-save-btn" type="button" onclick="saveCurrentPage()">Save Page</button>
     </div>
+
 </div>
 
-<script>
-    const NOTE_ID = @Model.Id;
-    const EXISTING_PAGES = @pages.Count;
-</script>
+<!-- meta for JS -->
+<div id="noteMeta"
+     data-note-id="@Model.Id"
+     data-pages-count="@pages.Count">
+</div>
 
 <script src="~/js/goodnotes.js"></script>

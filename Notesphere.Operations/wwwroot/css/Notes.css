@@ -17,7 +17,7 @@ body {
 /* Wrapper for the create note page */
 .ns-note-create {
     max-width: 900px;
-    margin: 40px auto 60px; /* space below navbar + bottom breathing room */
+    margin: 40px auto 60px;
     padding: 32px 40px;
     border-radius: 18px;
     background: var(--ns-card-bg);
@@ -32,7 +32,7 @@ body {
     margin-bottom: 24px;
 }
 
-/* Owner dropdown row */
+/* Generic form row */
 .ns-owner-row {
     display: flex;
     flex-direction: column;
@@ -46,48 +46,85 @@ body {
     color: var(--ns-text-muted);
 }
 
-/* Inputs / textarea */
-.ns-input,
-.ns-textarea,
-select.ns-input {
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid #dddddd;
-    padding: 10px 14px;
+/* Inputs */
+.ns-input {
+    border-radius: 12px;
+    border: 1px solid #ddd3c8;
+    padding: 10px 12px;
     font-size: 0.95rem;
     outline: none;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    background-color: #ffffff;
 }
 
-    .ns-input:focus,
-    .ns-textarea:focus,
-    select.ns-input:focus {
+    .ns-input:focus {
         border-color: var(--ns-accent-soft);
-        box-shadow: 0 0 0 3px rgba(169, 146, 125, 0.25);
+        box-shadow: 0 0 0 2px rgba(169, 146, 125, 0.25);
     }
 
-/* Title field spacing */
-.ns-title-row {
-    margin-bottom: 16px;
+/* Template picker ---------------------------------------------------- */
+
+.ns-template-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-/* Content (note body) */
-.ns-content-row {
-    margin-bottom: 20px;
+/* tall page-like preview */
+.ns-template-card {
+    position: relative;
+    border-radius: 14px;
+    padding: 10px;
+    border: 2px solid transparent;
+    background: #f6f4f2;
+    cursor: pointer;
+    width: 120px;
+    height: 160px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
-.ns-textarea {
-    min-height: 260px;
-    resize: vertical;
+    .ns-template-card input {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+    }
+
+.ns-template-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.ns-template-card-selected,
+.ns-template-card input:checked + .ns-template-name {
+    border-color: #7b1020;
+    box-shadow: 0 0 0 2px rgba(123,16,32,0.2);
+}
+
+/* Visual preview styles for the cards */
+.template-card-lined {
+    background-image: repeating-linear-gradient(#fdfaf5, #fdfaf5 26px, #e5dfd5 27px);
+    background-size: 100% 27px;
+}
+
+.template-card-dotted {
+    background-image: radial-gradient(#c4b5a5 1px, transparent 1px);
+    background-size: 12px 12px;
+    background-color: #fdfaf5;
+}
+
+.template-card-boxed {
+    background-image: linear-gradient(#e2dcd5 1px, transparent 1px), linear-gradient(90deg, #e2dcd5 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-color: #fdfaf5;
 }
 
 /* Favorite checkbox row */
-.ns-favorite-row {
-    display: flex;
+.ns-checkbox {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 22px;
     font-size: 0.9rem;
     color: var(--ns-text-muted);
 }
@@ -99,7 +136,7 @@ select.ns-input {
     gap: 12px;
 }
 
-/* Primary maroon button */
+/* Primary button */
 .ns-btn-primary {
     border: none;
     border-radius: 999px;
@@ -140,11 +177,11 @@ select.ns-input {
     margin-top: 4px;
 }
 
-/* Small-screen tweak */
-@media (max-width: 768px) {
+/* Small-screen tweaks */
+@media (max-width: 900px) {
     .ns-note-create {
         margin: 20px 12px 40px;
-        padding: 20px 18px;
+        padding: 24px 18px;
     }
 
     .ns-note-create-title {

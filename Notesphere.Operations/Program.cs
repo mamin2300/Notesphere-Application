@@ -6,8 +6,6 @@ using Notesphere.Services.NotesphereDataAccessLayer;
 using Notesphere.Services.NotesRepository;
 using Notesphere.Services.PlannerRepository;
 using Notesphere.Services.SharingRepository;
-using Notesphere.Services.ProductivityRepository;
-
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +27,6 @@ builder.Services.AddScoped<ConflictDetector>();
 builder.Services.AddScoped<RecurrenceEngine>();
 builder.Services.AddScoped<IDashboardServices, DashboardRepository>();
 builder.Services.AddScoped<ISharingServices, SharingRepository>();
-builder.Services.AddScoped<IProductivityServices, ProductivityRepository>();
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

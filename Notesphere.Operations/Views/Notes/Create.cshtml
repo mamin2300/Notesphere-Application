@@ -2,30 +2,65 @@
 
 @{
     ViewData["Title"] = "Create a new note";
+    var templates = ViewBag.Templates as List<Notesphere.Entities.NotesModels.NoteTemplate>;
 }
 
-<link rel="stylesheet" href="~/css/Notes.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Notes.css" />
 
 <div class="ns-note-create">
     <h1 class="ns-note-create-title">Create a new note</h1>
 
     <form asp-action="Create" method="post">
-       
-        <div class="ns-title-row">
-            <input asp-for="Title"
-                   class="ns-input"
-                   placeholder="Note title..." />
+        @Html.AntiForgeryToken()
+
+        <!-- Title -->
+        <div class="ns-owner-row">
+            <label class="ns-label">Note title</label>
+            <input asp-for="Title" class="ns-input" placeholder="Note title..." />
+            <span asp-validation-for="Title" class="text-danger"></span>
         </div>
 
-        <div class="ns-content-row">
-            <textarea asp-for="Content"
-                      class="ns-textarea"
-                      placeholder="Start typing your note here..."></textarea>
+        <!-- Template selector instead of big textarea -->
+        <div class="ns-owner-row">
+            <label class="ns-label">Page style</label>
+
+            <div class="ns-template-grid">
+                <!-- LINED -->
+                <label class="ns-template-card template-card-lined">
+                    <input type="radio"
+                           name="TemplateId"
+                           value="1"
+                           @(Model.TemplateId == 1 ? "checked" : "") />
+                    <span class="ns-template-name">Lined</span>
+                </label>
+
+                <!-- DOTTED -->
+                <label class="ns-template-card template-card-dotted">
+                    <input type="radio"
+                           name="TemplateId"
+                           value="2"
+                           @(Model.TemplateId == 2 ? "checked" : "") />
+                    <span class="ns-template-name">Dotted</span>
+                </label>
+
+                <!-- GRID / BOXED -->
+                <label class="ns-template-card template-card-boxed">
+                    <input type="radio"
+                           name="TemplateId"
+                           value="3"
+                           @(Model.TemplateId == 3 ? "checked" : "") />
+                    <span class="ns-template-name">Grid</span>
+                </label>
+            </div>
         </div>
 
-        <div class="ns-favorite-row">
-            <input asp-for="IsFavorite" type="checkbox" />
-            <span>Mark as favorite</span>
+
+        <!-- Favorite toggle -->
+        <div class="ns-owner-row">
+            <label class="ns-checkbox">
+                <input asp-for="IsFavorite" />
+                <span>Mark as favorite</span>
+            </label>
         </div>
 
         <div class="ns-actions-row">
@@ -34,3 +69,23 @@
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // template card click → set hidden TemplateId
+        const templateCards = document.querySelectorAll('.ns-template-card');
+        const templateIdInput = document.getElementById('TemplateId');
+
+        templateCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.templateId;
+                templateIdInput.value = id;
+
+                // visual selection
+                templateCards.forEach(c => c.classList.remove('ns-template-card-selected'));
+                card.classList.add('ns-template-card-selected');
+            });
+        });
+    </script>
+}

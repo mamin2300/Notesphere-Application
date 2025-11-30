@@ -33,6 +33,7 @@ namespace Notesphere.Operations.Controllers
         public async Task<IActionResult> Index()
         {
             var notes = await _notesService.GetAllNotes();
+
             return View(notes);
         }
 
@@ -49,26 +50,26 @@ namespace Notesphere.Operations.Controllers
 
         // GET: Notes/Create
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // Use the Note entity directly as the model
             var note = new Note();
+            await PopulateTemplates(null);
             return View(note);
         }
 
-        // POST: Notes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Note note)
         {
             if (!ModelState.IsValid)
             {
+                // need templates again if the form re-renders
+                await PopulateTemplates(note.TemplateId);
                 return View(note);
             }
 
-            // Get logged-in user ID
+            // Get logged-in user
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (string.IsNullOrEmpty(userIdString))
             {
                 return RedirectToAction("Login", "Account");
@@ -76,12 +77,12 @@ namespace Notesphere.Operations.Controllers
 
             note.StudentUserId = int.Parse(userIdString);
 
-            // Save the note
-            await _notesService.AddNote(note);
+            await _notesService.AddNote(note);  // your existing repo method
 
-            // Now redirect straight to the Editor for this note
+            // go straight to the editor for this note
             return RedirectToAction("Editor", new { id = note.Id });
         }
+
 
         // GET: Notes/Edit
         public async Task<IActionResult> Edit(int? id)
@@ -155,6 +156,18 @@ namespace Notesphere.Operations.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> SaveText(int noteId, string content)
+        {
+            var note = await _notesService.GetNoteById(noteId);
+            if (note == null) return NotFound();
+
+            note.Content = content;
+            await _notesService.UpdateNote(note);
+
+            return Ok();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddPage(int noteId)
         {
             int newPage = await _notesService.AddNewPage(noteId);
@@ -167,8 +180,6 @@ namespace Notesphere.Operations.Controllers
             await _notesService.DeletePage(noteId, pageNumber);
             return Ok();
         }
-
-
 
     }
 }

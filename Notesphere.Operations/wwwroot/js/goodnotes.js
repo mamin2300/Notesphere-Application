@@ -1,24 +1,35 @@
 ﻿let canvas, ctx;
 let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-let currentTool = 'pen';        // 'pen' | 'highlighter' | 'eraser'
-let currentColor = '#0A0908';
+let lastX = 0, lastY = 0;
+let currentTool = "pen";      // "pen" | "highlighter" | "eraser" | "text"
+let currentColor = "#0A0908";
 let currentPage = 1;
 let undoStack = [];
 let redoStack = [];
+let NOTE_ID = 0;
+let PAGES_COUNT = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-    canvas = document.getElementById('noteCanvas');
-    ctx = canvas.getContext('2d');
+document.addEventListener("DOMContentLoaded", () => {
+    const meta = document.getElementById("noteMeta");
+    if (meta) {
+        NOTE_ID = parseInt(meta.dataset.noteId || "0");
+        PAGES_COUNT = parseInt(meta.dataset.pagesCount || "0");
+    }
+
+    canvas = document.getElementById("noteCanvas");
+    if (!canvas) return;
+
+    ctx = canvas.getContext("2d");
 
     setupCanvasSize();
+    window.addEventListener("resize", setupCanvasSize);
+
     initToolbarDefaults();
     initCanvasEvents();
     initPages();
 });
 
-/* --------- Setup & Resizing ---------------------------------------- */
+/* ---------- Canvas size --------------------------------------------- */
 
 function setupCanvasSize() {
     const rect = canvas.getBoundingClientRect();
@@ -28,72 +39,60 @@ function setupCanvasSize() {
     canvas.height = rect.height * dpr;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
 
-    // White background
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, rect.width, rect.height);
+    ctx.clearRect(0, 0, rect.width, rect.height);
 }
 
-window.addEventListener('resize', () => {
-    // On resize, we could re-calc, but to keep it simple we ignore for now
-});
-
-/* --------- Toolbar logic -------------------------------------------- */
+/* ---------- Toolbar / tools ----------------------------------------- */
 
 function initToolbarDefaults() {
-    // Default tool = pen
-    selectTool('pen');
-    setColor('#0A0908');
-
-    const sizeSlider = document.getElementById('brushSize');
-    if (sizeSlider) {
-        sizeSlider.addEventListener('input', () => {
-            // nothing needed here; we read value in drawing
-        });
-    }
+    selectTool("pen");
+    setColor("#0A0908");
 }
 
 function selectTool(tool) {
     currentTool = tool;
 
-    // toggle active styles on buttons
-    document.querySelectorAll('.gn-tool-btn').forEach(btn => {
-        btn.classList.remove('gn-tool-active');
+    document.querySelectorAll(".gn-tool-btn").forEach(btn => {
+        btn.classList.remove("gn-tool-active");
     });
 
-    const activeId = 'tool_' + tool;
-    const activeBtn = document.getElementById(activeId);
-    if (activeBtn) {
-        activeBtn.classList.add('gn-tool-active');
-    }
+    const active = document.getElementById("tool_" + tool);
+    if (active) active.classList.add("gn-tool-active");
 }
 
 function setColor(color) {
     currentColor = color;
 }
 
-/* --------- Canvas Draw Events --------------------------------------- */
-
-function initCanvasEvents() {
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointerleave', onPointerUp);
-
-    canvas.style.touchAction = 'none';
+function getBrushSize() {
+    const slider = document.getElementById("brushSize");
+    return slider ? parseInt(slider.value || "12", 10) : 12;
 }
 
-function getBrushSize() {
-    const slider = document.getElementById('brushSize');
-    return slider ? parseInt(slider.value || '6', 10) : 6;
+/* ---------- Drawing events ------------------------------------------ */
+
+function initCanvasEvents() {
+    canvas.addEventListener("pointerdown", onPointerDown);
+    canvas.addEventListener("pointermove", onPointerMove);
+    canvas.addEventListener("pointerup", onPointerUp);
+    canvas.addEventListener("pointerleave", onPointerUp);
+
+    canvas.style.touchAction = "none";
 }
 
 function onPointerDown(e) {
-    e.preventDefault();
+    if (currentTool === "text") {
+        // text mode: focus textarea instead of drawing
+        const textArea = document.getElementById("noteText");
+        if (textArea) textArea.focus();
+        return;
+    }
 
-    saveCanvasState();  // snapshot for undo
+    e.preventDefault();
+    saveCanvasState();
 
     isDrawing = true;
 
@@ -103,7 +102,8 @@ function onPointerDown(e) {
 }
 
 function onPointerMove(e) {
-    if (!isDrawing) return;
+    if (!isDrawing || currentTool === "text") return;
+
     e.preventDefault();
 
     const rect = canvas.getBoundingClientRect();
@@ -116,20 +116,18 @@ function onPointerMove(e) {
 
     const size = getBrushSize();
 
-    if (currentTool === 'pen') {
-        ctx.globalCompositeOperation = 'source-over';
+    if (currentTool === "pen") {
+        ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = 1.0;
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = size;
-    }
-    else if (currentTool === 'highlighter') {
-        ctx.globalCompositeOperation = 'source-over';
+    } else if (currentTool === "highlighter") {
+        ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = 0.3;
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = size * 1.8;
-    }
-    else if (currentTool === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out';
+    } else if (currentTool === "eraser") {
+        ctx.globalCompositeOperation = "destination-out";
         ctx.globalAlpha = 1.0;
         ctx.lineWidth = size * 2;
     }
@@ -147,21 +145,17 @@ function onPointerUp(e) {
     isDrawing = false;
 }
 
-/* --------- Undo / Redo ---------------------------------------------- */
+/* ---------- Undo / redo --------------------------------------------- */
 
 function saveCanvasState() {
     try {
-        const dataUrl = canvas.toDataURL('image/png');
+        const dataUrl = canvas.toDataURL("image/png");
         undoStack.push(dataUrl);
 
-        if (undoStack.length > 30) {
-            undoStack.shift();
-        }
-
-        // when we draw a new stroke, clear redo history
+        if (undoStack.length > 40) undoStack.shift();
         redoStack = [];
     } catch (err) {
-        console.error('Unable to save canvas state:', err);
+        console.error("Unable to save canvas state:", err);
     }
 }
 
@@ -170,8 +164,6 @@ function restoreFromDataUrl(dataUrl) {
     img.onload = () => {
         const rect = canvas.getBoundingClientRect();
         ctx.clearRect(0, 0, rect.width, rect.height);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, rect.width, rect.height);
         ctx.drawImage(img, 0, 0, rect.width, rect.height);
     };
     img.src = dataUrl;
@@ -180,49 +172,42 @@ function restoreFromDataUrl(dataUrl) {
 function undoCanvas() {
     if (undoStack.length === 0) return;
 
-    // current state goes to redo
-    const current = canvas.toDataURL('image/png');
+    const current = canvas.toDataURL("image/png");
     redoStack.push(current);
 
     const previous = undoStack.pop();
-    if (previous) {
-        restoreFromDataUrl(previous);
-    }
+    if (previous) restoreFromDataUrl(previous);
 }
 
 function redoCanvas() {
     if (redoStack.length === 0) return;
 
-    const current = canvas.toDataURL('image/png');
+    const current = canvas.toDataURL("image/png");
     undoStack.push(current);
 
     const state = redoStack.pop();
-    if (state) {
-        restoreFromDataUrl(state);
-    }
+    if (state) restoreFromDataUrl(state);
 }
 
-/* --------- Pages / Thumbnails ---------------------------------------- */
+/* ---------- Pages ---------------------------------------------------- */
 
 function initPages() {
-    const thumbs = document.querySelectorAll('.gn-thumb');
+    const thumbs = document.querySelectorAll(".gn-thumb");
     if (thumbs.length > 0) {
-        // load first page
         const first = thumbs[0];
-        const pageNum = parseInt(first.dataset.page || '1', 10);
+        const pageNum = parseInt(first.dataset.page || "1", 10);
         loadPage(pageNum);
     } else {
-        // no pages, create one
         addNewPage();
     }
 }
 
 function highlightActiveThumb() {
-    document.querySelectorAll('.gn-thumb').forEach(el => {
-        el.classList.remove('gn-thumb-active');
-        const p = parseInt(el.dataset.page || '0', 10);
+    document.querySelectorAll(".gn-thumb").forEach(el => {
+        el.classList.remove("gn-thumb-active");
+        const p = parseInt(el.dataset.page || "0", 10);
         if (p === currentPage) {
-            el.classList.add('gn-thumb-active');
+            el.classList.add("gn-thumb-active");
         }
     });
 }
@@ -230,17 +215,13 @@ function highlightActiveThumb() {
 function loadPage(pageNumber) {
     currentPage = pageNumber;
 
-    const thumb = document.querySelector(`.gn-thumb[data-page="${pageNumber}"]`);
     const rect = canvas.getBoundingClientRect();
-
-    // wipe canvas
     ctx.clearRect(0, 0, rect.width, rect.height);
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, rect.width, rect.height);
 
+    const thumb = document.querySelector(`.gn-thumb[data-page="${pageNumber}"]`);
     if (thumb) {
         const imgData = thumb.dataset.image;
-        if (imgData && imgData.startsWith('data:image')) {
+        if (imgData && imgData.startsWith("data:image")) {
             restoreFromDataUrl(imgData);
         }
     }
@@ -248,32 +229,32 @@ function loadPage(pageNumber) {
     highlightActiveThumb();
     undoStack = [];
     redoStack = [];
-    saveCanvasState(); // initial state of this page
+    saveCanvasState();
 }
 
 function addNewPage() {
-    const formData = new URLSearchParams();
-    formData.append('noteId', NOTE_ID);
+    if (!NOTE_ID) return;
 
-    fetch('/Notes/AddPage', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+    const formData = new URLSearchParams();
+    formData.append("noteId", NOTE_ID.toString());
+
+    fetch("/Notes/AddPage", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     })
         .then(r => r.json())
         .then(data => {
             const newPage = data.pageNumber;
 
-            const pageList = document.getElementById('pageList');
-            const div = document.createElement('div');
-            div.className = 'gn-thumb';
+            const pageList = document.getElementById("pageList");
+            const div = document.createElement("div");
+            div.className = "gn-thumb";
             div.dataset.page = newPage;
-            div.dataset.image = '';
+            div.dataset.image = "";
             div.onclick = () => loadPage(newPage);
 
-            const span = document.createElement('span');
+            const span = document.createElement("span");
             span.textContent = `Page ${newPage}`;
             div.appendChild(span);
 
@@ -281,63 +262,82 @@ function addNewPage() {
 
             loadPage(newPage);
         })
-        .catch(err => console.error('Error adding page:', err));
+        .catch(err => console.error("Error adding page:", err));
 }
 
-/* --------- Save Current Page ----------------------------------------- */
+/* ---------- Save text + page ---------------------------------------- */
 
-function saveCurrentPage() {
-    const dataUrl = canvas.toDataURL('image/png');
+function saveNoteText() {
+    if (!NOTE_ID) return;
+
+    const textArea = document.getElementById("noteText");
+    if (!textArea) return;
 
     const formData = new URLSearchParams();
-    formData.append('noteId', NOTE_ID);
-    formData.append('pageNumber', currentPage);
-    formData.append('imageData', dataUrl);
+    formData.append("noteId", NOTE_ID.toString());
+    formData.append("content", textArea.value);
 
-    fetch('/Notes/SavePage', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+    return fetch("/Notes/SaveText", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+    }).then(r => {
+        if (!r.ok) throw new Error("Save text failed");
+    }).catch(err => console.error(err));
+}
+
+function saveCurrentPage() {
+    if (!NOTE_ID) return;
+
+    // save typed text
+    saveNoteText();
+
+    // save drawing as image
+    const dataUrl = canvas.toDataURL("image/png");
+
+    const formData = new URLSearchParams();
+    formData.append("noteId", NOTE_ID.toString());
+    formData.append("pageNumber", currentPage.toString());
+    formData.append("imageData", dataUrl);
+
+    fetch("/Notes/SavePage", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     })
         .then(r => {
-            if (!r.ok) throw new Error('Save failed');
+            if (!r.ok) throw new Error("Save failed");
             return r.text();
         })
         .then(() => {
-            // update thumbnail's data-image
             const thumb = document.querySelector(`.gn-thumb[data-page="${currentPage}"]`);
-            if (thumb) {
-                thumb.dataset.image = dataUrl;
-            }
+            if (thumb) thumb.dataset.image = dataUrl;
 
-            // small visual feedback
-            const saveBtn = document.querySelector('.gn-save-btn');
+            const saveBtn = document.querySelector(".gn-save-btn");
             if (saveBtn) {
-                saveBtn.textContent = 'Saved ✓';
-                setTimeout(() => saveBtn.textContent = 'Save Page', 1200);
+                saveBtn.textContent = "Saved ✓";
+                setTimeout(() => saveBtn.textContent = "Save Page", 1200);
             }
         })
-        .catch(err => console.error('Error saving page:', err));
+        .catch(err => console.error("Error saving page:", err));
 }
 
-/* --------- (Optional) Delete Page ------------------------------------ */
+/* ---------- Optional delete (not wired in UI yet) ------------------- */
 
 function deleteCurrentPage() {
-    const formData = new URLSearchParams();
-    formData.append('noteId', NOTE_ID);
-    formData.append('pageNumber', currentPage);
+    if (!NOTE_ID) return;
 
-    fetch('/Notes/DeletePage', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+    const formData = new URLSearchParams();
+    formData.append("noteId", NOTE_ID.toString());
+    formData.append("pageNumber", currentPage.toString());
+
+    fetch("/Notes/DeletePage", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     })
         .then(r => {
-            if (!r.ok) throw new Error('Delete failed');
+            if (!r.ok) throw new Error("Delete failed");
             return r.text();
         })
         .then(() => {
@@ -346,14 +346,14 @@ function deleteCurrentPage() {
                 thumb.parentElement.removeChild(thumb);
             }
 
-            const thumbs = document.querySelectorAll('.gn-thumb');
+            const thumbs = document.querySelectorAll(".gn-thumb");
             if (thumbs.length > 0) {
                 const first = thumbs[0];
-                const p = parseInt(first.dataset.page || '1', 10);
+                const p = parseInt(first.dataset.page || "1", 10);
                 loadPage(p);
             } else {
                 addNewPage();
             }
         })
-        .catch(err => console.error('Error deleting page:', err));
+        .catch(err => console.error("Error deleting page:", err));
 }

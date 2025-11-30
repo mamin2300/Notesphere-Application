@@ -474,76 +474,6 @@ namespace Notesphere.Services.Migrations
                     b.ToTable("RecurringEvents");
                 });
 
-            modelBuilder.Entity("Notesphere.Entities.ProductivityModels.ProductivityTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ProgressPercent")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("StudentUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentUserId");
-
-                    b.ToTable("ProductivityTasks");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.ProductivityModels.TaskChecklistItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsDone")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ProductivityTaskId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductivityTaskId");
-
-                    b.ToTable("TaskChecklistItems");
-                });
-
             modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupMember", b =>
                 {
                     b.Property<int>("Id")
@@ -716,28 +646,6 @@ namespace Notesphere.Services.Migrations
                     b.Navigation("RecurringEvent");
                 });
 
-            modelBuilder.Entity("Notesphere.Entities.ProductivityModels.ProductivityTask", b =>
-                {
-                    b.HasOne("Notesphere.Entities.NotesModels.StudentUser", "StudentUser")
-                        .WithMany()
-                        .HasForeignKey("StudentUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StudentUser");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.ProductivityModels.TaskChecklistItem", b =>
-                {
-                    b.HasOne("Notesphere.Entities.ProductivityModels.ProductivityTask", "ProductivityTask")
-                        .WithMany("ChecklistItems")
-                        .HasForeignKey("ProductivityTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductivityTask");
-                });
-
             modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupMember", b =>
                 {
                     b.HasOne("Notesphere.Entities.SharingModels.GroupSpace", "GroupSpace")
@@ -779,11 +687,6 @@ namespace Notesphere.Services.Migrations
             modelBuilder.Entity("Notesphere.Entities.PlannerModels.RecurringEvent", b =>
                 {
                     b.Navigation("Events");
-                });
-
-            modelBuilder.Entity("Notesphere.Entities.ProductivityModels.ProductivityTask", b =>
-                {
-                    b.Navigation("ChecklistItems");
                 });
 
             modelBuilder.Entity("Notesphere.Entities.SharingModels.GroupSpace", b =>
