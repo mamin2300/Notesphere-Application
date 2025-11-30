@@ -36,7 +36,8 @@ namespace Notesphere.Services.NotesRepository
             {
                 Name = name,
                 Email = email,
-                PasswordHash = HashPassword(password)
+                PasswordHash = HashPassword(password),
+                // CreatedAt = DateTime.UtcNow   // only if property exists!
             };
 
             _db.StudentUser.Add(user);
@@ -52,7 +53,6 @@ namespace Notesphere.Services.NotesRepository
 
         private static string HashPassword(string password)
         {
-            // basic SHA256 hash – OK for school project
             using var sha = SHA256.Create();
             var bytes = Encoding.UTF8.GetBytes(password);
             var hashBytes = sha.ComputeHash(bytes);
