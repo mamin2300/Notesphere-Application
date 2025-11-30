@@ -2,3 +2,12 @@
 *.db
 *.sqlite
 Notesphere.Operations/Data/NotesphereApplication.db
+
+# Visual Studio junk
+.vs/
+*.user
+*.suo
+
+# Build output
+**/bin/
+**/obj/
