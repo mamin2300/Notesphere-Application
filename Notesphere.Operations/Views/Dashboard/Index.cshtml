@@ -113,14 +113,15 @@
                                 <span class="ns-card-star">★</span>
                             }
                     </div>
-                    <h3 class="ns-card-title">@note.Title</h3>
-                    <p class="ns-card-text">
-                        @(
-                                            (note.Content ?? "").Length > 110
-                                            ? note.Content.Substring(0, 107) + "..."
-                                            : note.Content
-                                            )
-                    </p>
+                        <p class="ns-card-text">
+                            @{
+                                var preview = note.Content ?? "";
+                            }
+                        @(preview.Length > 110
+                                            ? preview.Substring(0, 107) + "..."
+                                            : preview)
+                </p>
+
                     <a class="ns-card-link"
                        href="@Url.Action("Editor", "Notes", new { id = note.Id })">
                         Open note →

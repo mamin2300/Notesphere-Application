@@ -155,3 +155,130 @@ body {
 .ns-note-btn-danger:hover {
     background: #f8d3d0;
 }
+
+/* Shared note page layout for Edit / Details / Delete */
+.ns-note-page {
+    max-width: 1100px;
+    margin: 32px auto 60px;
+    padding: 0 24px;
+}
+
+.ns-note-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.ns-note-header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.ns-note-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px 28px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+}
+
+/* Form rows */
+.ns-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.ns-form-row-inline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ns-input-multiline {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.ns-form-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 16px;
+}
+
+.ns-form-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Details / delete helpers */
+.ns-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px 24px;
+    margin-bottom: 18px;
+}
+
+    .ns-details-grid dt {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #777;
+    }
+
+    .ns-details-grid dd {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #0a0908;
+    }
+
+.ns-note-content-preview h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.ns-note-content-preview p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* Danger buttons */
+.ns-btn-danger-outline {
+    border-radius: 999px;
+    padding: 7px 18px;
+    border: 1px solid #b23b3b;
+    background: transparent;
+    color: #b23b3b;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+    .ns-btn-danger-outline:hover {
+        background: #b23b3b10;
+    }
+
+.ns-btn-danger-solid {
+    background: #b23b3b;
+    color: #fff;
+    border-color: #b23b3b;
+}
+
+    .ns-btn-danger-solid:hover {
+        background: #922d2d;
+    }
+
+/* Delete warning box */
+.ns-delete-warning {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #fff4f4;
+    color: #922d2d;
+    border: 1px solid #f0b4b4;
+    margin-bottom: 16px;
+}
