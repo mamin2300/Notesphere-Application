@@ -93,6 +93,26 @@
         background: rgba(242, 244, 243, 0.12);
     }
 
+/* Delete Page */
+
+.gn-delete-page 
+{
+    margin-top: 8px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px dashed rgba(250, 128, 114, 0.8);
+    background: transparent;
+    color: #f8b4ac;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+    .gn-delete-page:hover 
+    {
+        background: rgba(250, 128, 114, 0.15);
+    }
+
+
 /* MAIN AREA ----------------------------------------------------------- */
 
 .gn-main {
