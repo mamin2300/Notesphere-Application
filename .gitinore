@@ -1,3 +1,0 @@
-# Ignore SQLite DB files
-*.db
-*.sqlite
