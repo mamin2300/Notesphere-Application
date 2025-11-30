@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Notesphere.Entities\Notesphere.Entities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ProductivityRepository\" />
-  </ItemGroup>
-
 </Project>

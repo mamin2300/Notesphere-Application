@@ -3,6 +3,7 @@ using Notesphere.Entities.DashboardModels;
 using Notesphere.Entities.NotesModels;
 using Notesphere.Entities.PlannerModels;
 using Notesphere.Entities.SharingModels;
+using Notesphere.Entities.ProductivityModels;
 
 
 namespace Notesphere.Services.NotesphereDataAccessLayer
@@ -35,6 +36,9 @@ namespace Notesphere.Services.NotesphereDataAccessLayer
         public DbSet<SharedNote> SharedNotes { get; set; }
         public DbSet<NoteComment> NoteComments { get; set; }
 
+        //Productivity.db sets
+        public DbSet<ProductivityTask> ProductivityTasks { get; set; } = null!;
+        public DbSet<TaskChecklistItem> TaskChecklistItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
