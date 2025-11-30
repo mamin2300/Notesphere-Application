@@ -19,8 +19,10 @@
     </header>
 
     <section class="ns-note-card">
-        @* show model errors nicely *@
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <!-- hidden validation summary – dialog only -->
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger d-none"
+             id="validationSummary"></div>
 
         <form asp-action="Edit" method="post">
             @Html.AntiForgeryToken()
@@ -31,33 +33,30 @@
             <input type="hidden" asp-for="CreatedAt" />
             <input type="hidden" asp-for="UpdatedAt" />
 
-            <!-- TITLE ---------------------------------------------------- -->
+            <!-- TITLE -->
             <div class="ns-form-row">
                 <label asp-for="Title" class="ns-label"></label>
                 <input asp-for="Title" class="ns-input" />
-                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-            <!-- TEXT SUMMARY (Content) ----------------------------------- -->
+            <!-- TEXT SUMMARY (Content) -->
             <div class="ns-form-row">
                 <label class="ns-label" for="Content">Quick text summary</label>
                 <textarea asp-for="Content"
                           id="Content"
                           class="ns-input ns-input-multiline"
                           placeholder="Optional: short text version of this note..."></textarea>
-                <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
-            <!-- FAVORITE ------------------------------------------------- -->
+            <!-- FAVORITE -->
             <div class="ns-form-row ns-form-row-inline">
                 <label class="ns-checkbox">
                     <input asp-for="IsFavorite" />
                     <span>Mark as favorite</span>
                 </label>
-                <span asp-validation-for="IsFavorite" class="text-danger"></span>
             </div>
 
-            <!-- PAGE STYLE (TemplateId) ---------------------------------- -->
+            <!-- PAGE STYLE (TemplateId) -->
             <div class="ns-form-row">
                 <label asp-for="TemplateId" class="ns-label">Page style</label>
                 <select asp-for="TemplateId" class="ns-input">
@@ -65,20 +64,20 @@
                     <option value="2">Dotted</option>
                     <option value="3">Grid</option>
                 </select>
-                <span asp-validation-for="TemplateId" class="text-danger"></span>
             </div>
 
-            <!-- META INFO ------------------------------------------------ -->
+            <!-- META INFO -->
             <div class="ns-form-meta">
                 <span>Created @Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy h:mm tt")</span>
                 <span>Last updated @Model.UpdatedAt.ToLocalTime().ToString("MMM dd, yyyy h:mm tt")</span>
             </div>
 
-            <!-- ACTION BUTTONS ------------------------------------------- -->
+            <!-- ACTION BUTTONS -->
             <div class="ns-form-actions">
                 <button type="submit" class="ns-btn-primary">Save changes</button>
                 <a asp-action="Index" class="ns-btn-link">Cancel</a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="ns-btn-danger-outline ns-btn-danger-solid">
+                <a asp-action="Delete" asp-route-id="@Model.Id"
+                   class="ns-btn-danger-outline ns-btn-danger-solid">
                     Delete note
                 </a>
             </div>
@@ -88,4 +87,15 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const summary = document.getElementById("validationSummary");
+            if (!summary) return;
+
+            const text = summary.innerText.trim();
+            if (text.length > 0) {
+                alert("Please fix the following problems:\n\n" + text);
+            }
+        });
+    </script>
 }

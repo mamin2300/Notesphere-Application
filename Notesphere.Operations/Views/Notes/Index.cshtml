@@ -14,7 +14,9 @@
 
     @if (!Model.Any())
     {
-        <p class="ns-notes-empty">You don’t have any notes yet. Click “Create New” to start.</p>
+        <p class="ns-notes-empty">
+            You don’t have any notes yet. Click “Create New” to start.
+        </p>
     }
     else
     {
@@ -32,10 +34,14 @@
                 </div>
 
                 <p class="ns-note-snippet">
-                    @(!string.IsNullOrWhiteSpace(note.Content)
-                                    ? (note.Content.Length > 80 ? note.Content.Substring(0, 80) + "..." : note.Content)
-                                    : "No text yet – open in editor to start writing.")
-                                                                                   </p>
+                    @(
+                                    !string.IsNullOrWhiteSpace(note.Content)
+                                    ? (note.Content.Length > 80
+                                    ? note.Content.Substring(0, 80) + "..."
+                                    : note.Content)
+                                    : "No text yet – open in editor to start writing."
+                                    )
+                </p>
 
                 <div class="ns-note-meta">
                     <span>

@@ -4,10 +4,8 @@ using Notesphere.Services.NotesphereDataAccessLayer;
 
 namespace Notesphere.Services.NotesRepository
 {
-    /// <summary>
-    /// Concrete implementation of INotesService.
-    /// Encapsulates all data access + business rules for Notes.
-    /// </summary>
+    /* Concrete implementation of INotesService.
+     Encapsulates all data access + business rules for Notes.*/
     public class NotesRepository : INotesService
     {
         private readonly NotesphereDbContext _db;
@@ -17,9 +15,9 @@ namespace Notesphere.Services.NotesRepository
             _db = db;
         }
 
-        // -------------------------------------------------
-        // BASIC NOTE CRUD
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                          BASIC NOTE CRUD
+         ------------------------------------------------- */
 
         public async Task<List<Note>> GetAllNotes()
         {
@@ -96,9 +94,9 @@ namespace Notesphere.Services.NotesRepository
             await _db.SaveChangesAsync();
         }
 
-        // -------------------------------------------------
-        // TEMPLATES
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                             TEMPLATES
+         ------------------------------------------------- */
 
         public async Task<List<NoteTemplate>> GetTemplatesAsync()
         {
@@ -112,9 +110,9 @@ namespace Notesphere.Services.NotesRepository
             return await _db.NoteTemplates.FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        // -------------------------------------------------
-        // TAGS + NOTE TAGS
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                        TAGS + NOTE TAGS
+         ------------------------------------------------- */
 
         public async Task<List<Tag>> GetAllTags()
         {
@@ -150,9 +148,9 @@ namespace Notesphere.Services.NotesRepository
                 .ToListAsync();
         }
 
-        // -------------------------------------------------
-        // VERSION HISTORY
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                       VERSION HISTORY
+         ------------------------------------------------- */
 
         public async Task SaveNoteVersion(NoteVersion version)
         {
@@ -188,9 +186,9 @@ namespace Notesphere.Services.NotesRepository
                 .ToListAsync();
         }
 
-        // -------------------------------------------------
-        // EXPORT LOG
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                               EXPORT LOG
+         ------------------------------------------------- */
 
         public async Task LogNoteExportAsync(NoteExport export)
         {
@@ -216,9 +214,9 @@ namespace Notesphere.Services.NotesRepository
                 .ToListAsync();
         }
 
-        // -------------------------------------------------
-        // STUDENT USERS
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                        STUDENT USERS
+         ------------------------------------------------- */
 
         public async Task<List<StudentUser>> GetStudentUsers()
         {
@@ -227,9 +225,9 @@ namespace Notesphere.Services.NotesRepository
                 .ToListAsync();
         }
 
-        // -------------------------------------------------
-        // PAGES (DRAWING)
-        // -------------------------------------------------
+        /* -------------------------------------------------
+                        PAGES (DRAWING)
+         ------------------------------------------------- */
 
         public async Task<List<NotePage>> GetPagesByNoteId(int noteId)
         {

@@ -37,10 +37,7 @@
         </div>
 
         <button class="gn-add-page" onclick="addNewPage()">+ Add Page</button>
-
         <button class="gn-delete-page" onclick="deleteCurrentPage()">Delete Page</button>
-
-
     </div>
 
     <!-- MAIN -->
@@ -74,12 +71,11 @@
             </div>
         </div>
 
-        <!-- PAGE (canvas + textarea inside) -->
+        <!-- PAGE -->
         <div class="gn-main-inner">
             <div id="gn-page" class="gn-page @templateClass">
                 <canvas id="noteCanvas"></canvas>
 
-                <!-- TEXT BOX INSIDE PAGE -->
                 <textarea id="noteText"
                           class="gn-page-text"
                           placeholder="Type your note here...">@Model.Content</textarea>
@@ -91,7 +87,6 @@
 
 </div>
 
-<!-- meta for JS -->
 <div id="noteMeta"
      data-note-id="@Model.Id"
      data-pages-count="@pages.Count">

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Notesphere.Entities.NotesModels;
 using Notesphere.Services.NotesRepository;
@@ -8,6 +9,8 @@ using Notesphere.Operations.Models.Notes;
 
 namespace Notesphere.Operations.Controllers
 {
+    /// Handles user registration, login and logout using cookie authentication.
+    /// Author: Mamin Khan
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
@@ -19,6 +22,7 @@ namespace Notesphere.Operations.Controllers
 
         // GET: /Account/Register
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View(new RegisterViewModel());
@@ -26,17 +30,19 @@ namespace Notesphere.Operations.Controllers
 
         // POST: /Account/Register
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
+                // for dialog-based validation, the view will read ModelState
                 return View(model);
             }
 
             try
             {
-                // create StudentUser via your service (handles hashing etc.)
+                // Create StudentUser via service (hashing etc. is handled there)
                 StudentUser user = await _userService.RegisterAsync(
                     model.Name,
                     model.Email,
@@ -47,6 +53,7 @@ namespace Notesphere.Operations.Controllers
             }
             catch (Exception ex)
             {
+                // surface message for the validation dialog
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View(model);
             }
@@ -54,6 +61,7 @@ namespace Notesphere.Operations.Controllers
 
         // GET: /Account/Login
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
@@ -61,6 +69,7 @@ namespace Notesphere.Operations.Controllers
 
         // POST: /Account/Login
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -85,6 +94,7 @@ namespace Notesphere.Operations.Controllers
 
         // POST: /Account/Logout
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
@@ -92,6 +102,9 @@ namespace Notesphere.Operations.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        /// <summary>
+        /// Creates the ClaimsPrincipal for the logged in student and issues auth cookie.
+        /// </summary>
         private async Task SignInUser(StudentUser user)
         {
             var claims = new List<Claim>

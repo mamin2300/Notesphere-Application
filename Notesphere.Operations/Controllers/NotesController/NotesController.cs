@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Notesphere.Entities.NotesModels;
 using Notesphere.Services.NotesRepository;
-using System.Security.Claims;
+
 
 namespace Notesphere.Operations.Controllers
 {
+    /// Handles CRUD operations for notes and integrates with the
+    /// drawing notebook editor (multi-page canvas + text).
+    /// Author: Mamin Khan
+    [Authorize]
     public class NotesController : Controller
     {
         private readonly INotesService _notesService;
@@ -15,29 +21,45 @@ namespace Notesphere.Operations.Controllers
             _notesService = notesService;
         }
 
-        // Helper: populate StudentUser dropdown
+        // ----------------- Helpers -----------------
+
+        private int? GetCurrentStudentUserId()
+        {
+            var idString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(idString, out var id))
+                return id;
+            return null;
+        }
+
+        // Dropdown of all student users (mainly for admin/edit view)
         private async Task PopulateStudentUserDropDown(object? selectedId = null)
         {
             var users = await _notesService.GetStudentUsers();
             ViewData["StudentUserId"] = new SelectList(users, "Id", "Email", selectedId);
         }
 
-        // Helper: populate templates list
-        private async Task PopulateTemplates(object? selectedId = null)
+        // Template list for select / radio buttons
+        private async Task PopulateTemplatesAsync(object? selectedId = null)
         {
             var templates = await _notesService.GetTemplatesAsync();
             ViewBag.Templates = templates;
+            ViewBag.SelectedTemplateId = selectedId;
         }
 
-        // GET: Notes
+        // ----------------- Views -----------------
+
+        // GET: /Notes
         public async Task<IActionResult> Index()
         {
-            var notes = await _notesService.GetAllNotes();
+            var studentId = GetCurrentStudentUserId();
+            if (studentId == null)
+                return RedirectToAction("Login", "Account");
 
+            var notes = await _notesService.GetNotesForStudentAsync(studentId.Value);
             return View(notes);
         }
 
-        // GET: Notes/Details/5
+        // GET: /Notes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -48,43 +70,37 @@ namespace Notesphere.Operations.Controllers
             return View(note);
         }
 
-        // GET: Notes/Create
+        // GET: /Notes/Create
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             var note = new Note();
-            await PopulateTemplates(null);
+            await PopulateTemplatesAsync(null);
             return View(note);
         }
 
+        // POST: /Notes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Note note)
         {
             if (!ModelState.IsValid)
             {
-                // need templates again if the form re-renders
-                await PopulateTemplates(note.TemplateId);
+                await PopulateTemplatesAsync(note.TemplateId);
                 return View(note);
             }
 
-            // Get logged-in user
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userIdString))
-            {
+            var studentId = GetCurrentStudentUserId();
+            if (studentId == null)
                 return RedirectToAction("Login", "Account");
-            }
 
-            note.StudentUserId = int.Parse(userIdString);
+            note.StudentUserId = studentId.Value;
 
-            await _notesService.AddNote(note);  // your existing repo method
-
-            // go straight to the editor for this note
+            await _notesService.AddNote(note);   // creates initial version inside service
             return RedirectToAction("Editor", new { id = note.Id });
         }
 
-
-        // GET: Notes/Edit
+        // GET: /Notes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -93,31 +109,33 @@ namespace Notesphere.Operations.Controllers
             if (note == null) return NotFound();
 
             await PopulateStudentUserDropDown(note.StudentUserId);
-            await PopulateTemplates(note.TemplateId);
+            await PopulateTemplatesAsync(note.TemplateId);
 
             return View(note);
         }
 
-        // POST: Notes/Edit
+        // POST: /Notes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId,CreatedAt,UpdatedAt")] Note note)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,StudentUserId,Title,Content,IsFavorite,TemplateId,CreatedAt,UpdatedAt")]
+            Note note)
         {
             if (id != note.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _notesService.UpdateNote(note);
-                return RedirectToAction(nameof(Index));
+                await PopulateStudentUserDropDown(note.StudentUserId);
+                await PopulateTemplatesAsync(note.TemplateId);
+                return View(note);
             }
 
-            await PopulateStudentUserDropDown(note.StudentUserId);
-            await PopulateTemplates(note.TemplateId);
-
-            return View(note);
+            await _notesService.UpdateNote(note);  // service will create NoteVersion snapshot
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Notes/Delete
+        // GET: /Notes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -128,7 +146,7 @@ namespace Notesphere.Operations.Controllers
             return View(note);
         }
 
-        // POST: Notes/Delete
+        // POST: /Notes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -137,6 +155,9 @@ namespace Notesphere.Operations.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // ----------------- Notebook Editor -----------------
+
+        // GET: /Notes/Editor/5
         public async Task<IActionResult> Editor(int id)
         {
             var note = await _notesService.GetNoteById(id);
@@ -148,6 +169,7 @@ namespace Notesphere.Operations.Controllers
             return View(note);
         }
 
+        // POST: /Notes/SavePage   (called via AJAX from canvas)
         [HttpPost]
         public async Task<IActionResult> SavePage(int noteId, int pageNumber, string imageData)
         {
@@ -155,6 +177,7 @@ namespace Notesphere.Operations.Controllers
             return Ok();
         }
 
+        // POST: /Notes/SaveText   (called via AJAX from text panel)
         [HttpPost]
         public async Task<IActionResult> SaveText(int noteId, string content)
         {
@@ -162,11 +185,12 @@ namespace Notesphere.Operations.Controllers
             if (note == null) return NotFound();
 
             note.Content = content;
-            await _notesService.UpdateNote(note);
+            await _notesService.UpdateNote(note); // creates NoteVersion
 
             return Ok();
         }
 
+        // POST: /Notes/AddPage
         [HttpPost]
         public async Task<IActionResult> AddPage(int noteId)
         {
@@ -174,12 +198,12 @@ namespace Notesphere.Operations.Controllers
             return Json(new { pageNumber = newPage });
         }
 
+        // POST: /Notes/DeletePage
         [HttpPost]
         public async Task<IActionResult> DeletePage(int noteId, int pageNumber)
         {
             await _notesService.DeletePage(noteId, pageNumber);
             return Ok();
         }
-
     }
 }

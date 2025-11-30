@@ -2,88 +2,48 @@
 
 namespace Notesphere.Services.NotesRepository
 {
-    /// <summary>
-    /// Business/service layer contract for all note-related use cases.
-    /// </summary>
+    // Business/service layer contract for all note-related use cases.
     public interface INotesService
     {
         // ---------------- BASIC NOTE CRUD ----------------
 
-        /// <summary>Return all notes (you can later filter by user in controller).</summary>
-        Task<List<Note>> GetAllNotes();
-
-        /// <summary>Get a single note by primary key.</summary>
-        Task<Note?> GetNoteById(int id);
-
-        /// <summary>Create a new note (CreatedAt/UpdatedAt are set in the repository).</summary>
-        Task AddNote(Note note);
-
-        /// <summary>Update an existing note + automatically create a NoteVersion snapshot.</summary>
-        Task UpdateNote(Note note);
-
-        /// <summary>Delete a note by Id (will cascade to related rows if configured).</summary>
-        Task DeleteNote(int id);
-
-        // Convenience: get notes for a student (used in dashboard/list pages).
-        Task<List<Note>> GetNotesForStudentAsync(int studentUserId);
-
+        Task<List<Note>> GetAllNotes();  // Return all notes (filter by user in controller).
+        Task<Note?> GetNoteById(int id);  // Get a single note by primary key.
+        Task AddNote(Note note);  // Create a new note (CreatedAt/UpdatedAt are set in the repository).
+        Task UpdateNote(Note note);  //Update an existing note + automatically create a NoteVersion snapshot.
+        Task DeleteNote(int id);  //Delete a note by Id (will cascade to related rows if configured).
+        Task<List<Note>> GetNotesForStudentAsync(int studentUserId);  // Convenience: get notes for a student (used in dashboard/list pages).
 
         // ---------------- TEMPLATES ----------------
 
         Task<List<NoteTemplate>> GetTemplatesAsync();
         Task<NoteTemplate?> GetTemplateByIdAsync(int id);
 
-
         // ---------------- TAGS & NOTE TAGS ----------------
 
-        /// <summary>Return all available tags.</summary>
-        Task<List<Tag>> GetAllTags();
-
-        /// <summary>Add a tag to a note (avoids duplicates).</summary>
-        Task AddTagToNote(NoteTag join);
-
-        /// <summary>Get tags for a specific note.</summary>
-        Task<List<Tag>> GetTagsForNoteAsync(int noteId);
-
+        Task<List<Tag>> GetAllTags();  //Return all available tags.
+        Task AddTagToNote(NoteTag join);  //Add a tag to a note (avoids duplicates)
+        Task<List<Tag>> GetTagsForNoteAsync(int noteId);  //Get tags for a specific note.
 
         // ---------------- VERSION HISTORY ----------------
 
-        /// <summary>
-        /// Save a new version snapshot. If VersionNumber or SavedAt are not set,
-        /// the repository will fill them in.
-        /// </summary>
-        Task SaveNoteVersion(NoteVersion version);
-
-        /// <summary>Get all versions for a note, newest first.</summary>
-        Task<List<NoteVersion>> GetVersionsForNoteAsync(int noteId);
-
+        Task SaveNoteVersion(NoteVersion version);  // Save a new version snapshot. If VersionNumber or SavedAt are not set, the repository will fill them in.
+        Task<List<NoteVersion>> GetVersionsForNoteAsync(int noteId);  //Get all versions for a note, newest first.
 
         // ---------------- EXPORT LOG ----------------
 
-        /// <summary>Log that a note was exported in a certain format/destination.</summary>
-        Task LogNoteExportAsync(NoteExport export);
-
-        /// <summary>Get all exports for a note.</summary>
-        Task<List<NoteExport>> GetExportsForNoteAsync(int noteId);
-
+        Task LogNoteExportAsync(NoteExport export);  // Log that a note was exported in a certain format/destination.
+        Task<List<NoteExport>> GetExportsForNoteAsync(int noteId);  // Get all exports for a note.
 
         // ---------------- STUDENT USERS ----------------
 
-        /// <summary>Used mainly for dropdowns / admin.</summary>
-        Task<List<StudentUser>> GetStudentUsers();
-
+        Task<List<StudentUser>> GetStudentUsers();  // Used mainly for dropdowns / admin.
 
         // ---------------- PAGES (DRAWING) ----------------
 
         Task<List<NotePage>> GetPagesByNoteId(int noteId);
-
-        /// <summary>Insert or update a page image for a given note + page number.</summary>
-        Task SavePageImage(int noteId, int pageNumber, string imageData);
-
-        /// <summary>Add a new page at the end and return the new page number.</summary>
-        Task<int> AddNewPage(int noteId);
-
-        /// <summary>Delete a specific page for a note.</summary>
-        Task DeletePage(int noteId, int pageNumber);
+        Task SavePageImage(int noteId, int pageNumber, string imageData);  // Insert or update a page image for a given note + page number.
+        Task<int> AddNewPage(int noteId);  // Add a new page at the end and return the new page number.
+        Task DeletePage(int noteId, int pageNumber);  // Delete a specific page for a note.
     }
 }
