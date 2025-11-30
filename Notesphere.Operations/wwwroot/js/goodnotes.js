@@ -325,35 +325,42 @@ function saveCurrentPage() {
 /* ---------- Optional delete (not wired in UI yet) ------------------- */
 
 function deleteCurrentPage() {
-    if (!NOTE_ID) return;
+    if (!confirm("Delete this page? This cannot be undone.")) return;
+
+    const meta = document.getElementById('noteMeta');
+    if (!meta) return;
+
+    const noteId = meta.dataset.noteId;
 
     const formData = new URLSearchParams();
-    formData.append("noteId", NOTE_ID.toString());
-    formData.append("pageNumber", currentPage.toString());
+    formData.append('noteId', noteId);
+    formData.append('pageNumber', currentPage);
 
-    fetch("/Notes/DeletePage", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    fetch('/Notes/DeletePage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString()
     })
         .then(r => {
-            if (!r.ok) throw new Error("Delete failed");
+            if (!r.ok) throw new Error('Delete failed');
             return r.text();
         })
         .then(() => {
+            // remove thumbnail for this page
             const thumb = document.querySelector(`.gn-thumb[data-page="${currentPage}"]`);
             if (thumb && thumb.parentElement) {
                 thumb.parentElement.removeChild(thumb);
             }
 
-            const thumbs = document.querySelectorAll(".gn-thumb");
+            // pick another page, or create a new one if none left
+            const thumbs = document.querySelectorAll('.gn-thumb');
             if (thumbs.length > 0) {
                 const first = thumbs[0];
-                const p = parseInt(first.dataset.page || "1", 10);
+                const p = parseInt(first.dataset.page || '1', 10);
                 loadPage(p);
             } else {
                 addNewPage();
             }
         })
-        .catch(err => console.error("Error deleting page:", err));
+        .catch(err => console.error('Error deleting page:', err));
 }

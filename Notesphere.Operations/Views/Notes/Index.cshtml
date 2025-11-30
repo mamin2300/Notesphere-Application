@@ -4,83 +4,61 @@
     ViewData["Title"] = "Notes";
 }
 
-<h1>Notes</h1>
+<link rel="stylesheet" href="~/css/notes-list.css" />
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+<div class="ns-notes-wrapper">
+    <div class="ns-notes-header">
+        <h1 class="ns-notes-title">Notes</h1>
+        <a asp-action="Create" class="ns-btn-primary">Create New</a>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StudentUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsFavorite)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TemplateId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedAt)
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StudentUser.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsFavorite)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TemplateId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAt)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedAt)
-                </td>
-                <td>
-                    <a asp-controller="Sharing"
-                       asp-action="ShareNote"
-                       asp-route-noteId="@item.Id">
-                        Share
-                    </a>
-                </td>
+    @if (!Model.Any())
+    {
+        <p class="ns-notes-empty">You don’t have any notes yet. Click “Create New” to start.</p>
+    }
+    else
+    {
+        <div class="ns-notes-grid">
+            @foreach (var note in Model)
+            {
+                <div class="ns-note-card">
+                    <div class="ns-note-card-header">
+                        <h3 class="ns-note-card-title">@note.Title</h3>
 
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                    <a asp-action="Editor" asp-route-id="@item.Id" class="btn btn-dark btn-sm">
-                        Open in Editor
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        @if (note.IsFavorite)
+                        {
+                            <span class="ns-note-badge">★ Favorite</span>
+                        }
+                </div>
+
+                <p class="ns-note-snippet">
+                    @(!string.IsNullOrWhiteSpace(note.Content)
+                                    ? (note.Content.Length > 80 ? note.Content.Substring(0, 80) + "..." : note.Content)
+                                    : "No text yet – open in editor to start writing.")
+                                                                                   </p>
+
+                <div class="ns-note-meta">
+                    <span>
+                        Template:
+                        @(
+                                            note.TemplateId == 1 ? "Lined" :
+                                            note.TemplateId == 2 ? "Dotted" :
+                                            note.TemplateId == 3 ? "Grid" : "Blank"
+                                            )
+                    </span>
+                    <span>Created @note.CreatedAt.ToShortDateString()</span>
+                </div>
+
+                    <div class="ns-note-actions">
+                        <a asp-action="Editor" asp-route-id="@note.Id" class="ns-note-btn-main">
+                            Open in Editor
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@note.Id" class="ns-note-btn-secondary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@note.Id" class="ns-note-btn-secondary">Details</a>
+                        <a asp-action="Delete" asp-route-id="@note.Id" class="ns-note-btn-danger">Delete</a>
+                    </div>
+                </div>
+                }
+        </div>
+    }
+</div>
