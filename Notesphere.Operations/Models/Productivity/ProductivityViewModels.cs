@@ -8,7 +8,7 @@ using TaskStatusEnum = Notesphere.Entities.ProductivityModels.TaskStatus;
 
 namespace Notesphere.Operations.Models.Productivity
 {
-    // Row in the Productivity list page
+    // Row in the Productivity list 
     public class ProductivityTaskListItemVM
     {
         public int Id { get; set; }
