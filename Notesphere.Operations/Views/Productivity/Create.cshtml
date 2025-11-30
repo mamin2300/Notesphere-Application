@@ -4,52 +4,86 @@
     ViewData["Title"] = "Create Task";
 }
 
-<div class="ns-sharing-page">
-    <div class="ns-sharing-header">
-        <div>
-            <h2 class="ns-sharing-title">Create Task</h2>
-            <p class="ns-sharing-subtitle">
-                Add a new task with a due date, priority, and status.
-            </p>
+<link rel="stylesheet" href="~/css/Productivity.css" />
+
+<div class="ns-page-wrapper">
+    <div class="ns-page-header">
+        <h2 class="ns-page-title">Create Task</h2>
+        <p class="ns-page-subtitle">
+            Add a new task with a due date, priority, and status.
+        </p>
+    </div>
+
+    <div class="ns-form-container">
+        <div class="ns-form-card">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Title -->
+                <div class="ns-form-group">
+                    <label asp-for="Title">
+                        Title <span class="ns-required">*</span>
+                    </label>
+                    <input asp-for="Title"
+                           class="ns-input"
+                           autofocus
+                           placeholder="e.g. Finish Data Warehouse assignment" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="ns-form-group">
+                    <label asp-for="Description">Description</label>
+                    <textarea asp-for="Description"
+                              class="ns-textarea"
+                              placeholder="Add any details, links, or notes about this task..."></textarea>
+                </div>
+
+                <!-- Due date + Priority + Status in one row -->
+                <div class="ns-form-row">
+                    <div class="ns-form-group">
+                        <label asp-for="DueDate">
+                            Due date <span class="ns-required">*</span>
+                        </label>
+                        <input asp-for="DueDate"
+                               type="date"
+                               class="ns-input" />
+                        <span asp-validation-for="DueDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="ns-form-group">
+                        <label asp-for="Priority">Priority</label>
+                        <select asp-for="Priority"
+                                asp-items="Html.GetEnumSelectList<Notesphere.Entities.ProductivityModels.TaskPriority>()"
+                                class="ns-select">
+                        </select>
+                    </div>
+
+                    <div class="ns-form-group">
+                        <label asp-for="Status">Status</label>
+                        <select asp-for="Status"
+                                asp-items="Html.GetEnumSelectList<Notesphere.Entities.ProductivityModels.TaskStatus>()"
+                                class="ns-select">
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="ns-form-actions ns-form-actions-right">
+                    <button type="submit" class="ns-btn-primary">
+                        Create Task
+                    </button>
+                    <a asp-action="Index" class="ns-btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div class="ns-form-card">
-        <form asp-action="Create" method="post">
-            <div class="ns-form-group">
-                <label asp-for="Title"></label>
-                <input asp-for="Title" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-
-            <div class="ns-form-group">
-                <label asp-for="Description"></label>
-                <textarea asp-for="Description"></textarea>
-            </div>
-
-            <div class="ns-form-group">
-                <label asp-for="DueDate"></label>
-                <input asp-for="DueDate" type="date" />
-            </div>
-
-            <div class="ns-form-group">
-                <label asp-for="Priority"></label>
-                <select asp-for="Priority"
-                        asp-items="Html.GetEnumSelectList<Notesphere.Entities.ProductivityModels.TaskPriority>()">
-                </select>
-            </div>
-
-            <div class="ns-form-group">
-                <label asp-for="Status"></label>
-                <select asp-for="Status"
-                        asp-items="Html.GetEnumSelectList<Notesphere.Entities.ProductivityModels.TaskStatus>()">
-                </select>
-            </div>
-
-            <div class="ns-form-actions">
-                <button type="submit" class="ns-btn-primary">Create task</button>
-                <a asp-action="Index" class="ns-btn-outline">Cancel</a>
-            </div>
-        </form>
-    </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

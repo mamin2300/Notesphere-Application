@@ -3,50 +3,61 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="ns-app-wrapper">
-    <!-- SIDEBAR -->
-    <aside class="ns-sidebar">
-        <div class="ns-logo">Notesphere</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <nav class="ns-nav-section">
-            <p class="ns-nav-title">Overview</p>
-            <a href="#" class="ns-nav-link ns-nav-link-active">Dashboard</a>
-            <a href="@Url.Action("Index", "Notes")" class="ns-nav-link">Notes</a>
-            <a href="#" class="ns-nav-link">Planner</a>
-            <a href="#" class="ns-nav-link">Completed</a>
-            <a href="@Url.Action("MyGroups", "Sharing")" class="ns-nav-link">
-                Sharing & Collaboration
+     <!-- ============================= 
+          NOTION SIDEBAR (HOVER / LOCK)
+          ============================= -->
+<div id="notionSidebar" class="ns-sidebar notion-hidden">
+
+    <div class="ns-sidebar-header">
+        <h5 class="ns-logo">Notesphere</h5>
+
+        <button id="hamburgerBtn" class="btn ns-menu-btn">☰</button>
+    </div>
+
+    <nav class="ns-nav-section">
+        <p class="ns-nav-title">Overview</p>
+        <a href="@Url.Action("Index", "Notes")" class="ns-nav-link">Notes</a>
+        <a href="@Url.Action("Index", "Planner")" class="ns-nav-link">Planner</a>
+        <a href="@Url.Action("Index", "Productivity")" class="ns-nav-link">Productivity</a>
+    </nav>
+
+    <nav class="ns-nav-section mt-3">
+        <p class="ns-nav-title">Workspaces</p>
+        <a href="@Url.Action("MyGroups", "Sharing")" class="ns-nav-link">Sharing & Collaboration</a>
+        <a href="@Url.Action("SharedWithMe", "Sharing")" class="ns-nav-link">Shared With Me</a>
+        @foreach (var ws in Model.Workspaces)
+        {
+            var active = ws.Id == Model.SelectedWorkspaceId ? "ns-nav-link-active" : "";
+            <a href="@Url.Action("Index", new { workspaceId = ws.Id })"
+               class="ns-nav-link @active">
+                @ws.Name
             </a>
-            <a href="@Url.Action("SharedWithMe", "Sharing")" class="ns-nav-link">
-                Shared With Me
-            </a>
-            <a href="@Url.Action("Index", "Productivity")" class="ns-nav-link">
-                Productivity
-            </a>
-        </nav>
+        }
+    </nav>
 
-        <nav class="ns-nav-section">
-            <p class="ns-nav-title">Workspaces</p>
-            @foreach (var ws in Model.Workspaces)
-            {
-                var active = ws.Id == Model.SelectedWorkspaceId ? "ns-nav-link-active" : "";
-                <a href="@Url.Action("Index", new { workspaceId = ws.Id })"
-                   class="ns-nav-link @active">
-                    @ws.Name
-                </a>
-            }
-        </nav>
+    <button class="btn ns-btn-primary w-100 mt-auto"
+            onclick="location.href='@Url.Action("Create", "Notes")'">
+        Create note
+    </button>
 
-        <button class="ns-btn-primary" onclick="location.href='@Url.Action("Create", "Notes")'">
-            Create note
-        </button>
+</div>
 
-    </aside>
+     <!-- =============================
+                 MAIN WRAPPER 
+          ============================= -->
+<div id="appWrapper" class="ns-app-wrapper">
 
-    <!-- MAIN -->
     <main class="ns-main">
+
+        <!-- TOPBAR -->
         <header class="ns-topbar">
-            <div>
+
+            <!-- Hamburger button -->
+
+            <div class="ns-header-block">
                 <h1 class="ns-page-title">Today</h1>
                 <p class="ns-page-subtitle">
                     @Model.Today.ToString("dddd, MMM dd") ·
@@ -54,11 +65,11 @@
                     @Model.FavoriteNotesCount favorite(s)
                 </p>
             </div>
+
             <div class="ns-topbar-right">
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
                     <span class="ns-chip">@User.Identity.Name</span>
-
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="ns-chip ns-chip-active">Logout</button>
@@ -66,16 +77,13 @@
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="ns-chip ns-chip-active">
-                        Login
-                    </a>
+                    <a asp-controller="Account" asp-action="Login" class="ns-chip ns-chip-active">Login</a>
                 }
             </div>
 
-
         </header>
 
-        <!-- Tabs -->
+        <!-- TABS -->
         <div class="ns-tabs">
             <button class="ns-tab ns-tab-active">Overview</button>
             <button class="ns-tab">Notes</button>
@@ -83,7 +91,8 @@
             <button class="ns-tab">Files</button>
         </div>
 
-        <!-- Product planning / main cards -->
+        @* ---- QUICK NOTES ---- *@
+
         <section class="ns-section-header">
             <div>
                 <h2 class="ns-section-title">Quick notes</h2>
@@ -97,9 +106,7 @@
             {
                 <div class="ns-empty">
                     <p>No notes yet. Create your first note to get started.</p>
-                    <a class="ns-btn-primary" href="@Url.Action("Create", "Notes")">
-                        Create note
-                    </a>
+                    <a class="ns-btn-primary" href="@Url.Action("Create", "Notes")">Create note</a>
                 </div>
             }
             else
@@ -108,40 +115,37 @@
                 {
                     <article class="ns-card">
                         <div class="ns-card-top">
-                            <span class="ns-card-badge">
-                                @note.UpdatedAt.ToLocalTime().ToString("MMM dd")
-                            </span>
+                            <span class="ns-card-badge">@note.UpdatedAt.ToLocalTime().ToString("MMM dd")</span>
                             @if (note.IsFavorite)
                             {
                                 <span class="ns-card-star">★</span>
                             }
-                    </div>
+                        </div>
+
                         <p class="ns-card-text">
                             @{
                                 var preview = note.Content ?? "";
                             }
-                        @(preview.Length > 110
-                                            ? preview.Substring(0, 107) + "..."
-                                            : preview)
-                </p>
+                            @(preview.Length > 110 ? preview.Substring(0, 107) + "..." : preview)
+                        </p>
 
-                    <a class="ns-card-link"
-                       href="@Url.Action("Editor", "Notes", new { id = note.Id })">
-                        Open note →
-                    </a>
-
-                </article>
-                        }
+                        <a class="ns-card-link"
+                           href="@Url.Action("Editor", "Notes", new { id = note.Id })">
+                            Open note →
+                        </a>
+                    </article>
+                }
             }
         </section>
 
-        <!-- Second row: reminders + favorites -->
         <div class="ns-second-row">
+
             <section class="ns-box">
                 <div class="ns-box-header">
                     <h3>Upcoming reminders</h3>
                     <a class="ns-link-small" href="#">View all</a>
                 </div>
+
                 @if (!Model.Reminders.Any())
                 {
                     <p class="ns-muted-small">No reminders for the next 7 days.</p>
@@ -153,20 +157,19 @@
                         {
                             <li>
                                 <span class="ns-list-title">@r.Title</span>
-                                <span class="ns-list-meta">
-                                    @r.CreatedAt.ToLocalTime().ToString("MMM dd, h:mm tt")
-                                </span>
+                                <span class="ns-list-meta">@r.CreatedAt.ToLocalTime().ToString("MMM dd, h:mm tt")</span>
                             </li>
                         }
                     </ul>
                 }
             </section>
 
-            <section class="ns-box">
+            <section class="ns-box ">
                 <div class="ns-box-header">
                     <h3>Favorite notes</h3>
                     <span class="ns-muted-small">@Model.FavoriteNotesCount total</span>
                 </div>
+
                 @if (!Model.FavoriteNotes.Any())
                 {
                     <p class="ns-muted-small">Mark a note as favorite to see it here.</p>
@@ -178,29 +181,31 @@
                         {
                             <li>
                                 <span class="ns-list-title">@n.Title</span>
-                                <span class="ns-list-meta">
-                                    Updated @n.UpdatedAt.ToLocalTime().ToString("MMM dd")
-                                </span>
+                                <span class="ns-list-meta">Updated @n.UpdatedAt.ToLocalTime().ToString("MMM dd")</span>
                             </li>
                         }
                     </ul>
                 }
             </section>
 
-            <section class="ns-box">
+            <section class="ns-box ns-todo">
+
                 <div class="ns-box-header">
-                    <h3>Quick actions</h3>
+                    <h3>To-Do List</h3>
                 </div>
-                <div class="ns-actions-grid">
-                    @foreach (var qa in Model.QuickActions)
-                    {
-                        <button class="ns-action-btn"
-                                onclick="location.href='@qa.TargetRoute'">
-                            @qa.Label
-                        </button>
-                    }
-                </div>
+
+                <div class="todo-input-row">
+                 <input id="todoInput" type="text" placeholder="Add a new task..." class="todo-input"/>
+                    <button id="addTodoBtn" class="todo-add-btn">+</button>
+                 </div>
+
+                 <ul id="todoList" class="todo-list">
+                 </ul>
             </section>
         </div>
     </main>
 </div>
+
+<script src="~/js/Dashboard-Sidebar.js"></script>
+<script src="~/js/todo.js"></script>
+
