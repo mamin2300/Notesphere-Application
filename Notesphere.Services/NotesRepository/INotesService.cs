@@ -31,6 +31,7 @@ namespace Notesphere.Services.NotesRepository
         Task<List<NoteVersion>> GetVersionsForNoteAsync(int noteId);  //Get all versions for a note, newest first.
 
         // ---------------- EXPORT LOG ----------------
+        Task SavePage(int noteId, int pageNumber, string imageData, string textBoxes);
 
         Task LogNoteExportAsync(NoteExport export);  // Log that a note was exported in a certain format/destination.
         Task<List<NoteExport>> GetExportsForNoteAsync(int noteId);  // Get all exports for a note.

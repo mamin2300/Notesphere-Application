@@ -22,6 +22,7 @@ namespace Notesphere.Entities.NotesModels
 
         [Required(ErrorMessage = "Page image data cannot be empty.")]
         public string ImageData { get; set; } = string.Empty;  // Base64 encoded PNG/JPEG data of the drawn page.
+        public string TextBoxesJson { get; set; } = "[]";
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;  // Timestamp for the most recent modification.
     }

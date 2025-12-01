@@ -8,18 +8,22 @@
     --gn-page-bg: #fffdf9;
 }
 
-/* LAYOUT WRAPPER ------------------------------------------------------ */
+/* =======================================================
+   EDITOR LAYOUT
+======================================================= */
 
 .gn-editor-wrapper {
     display: grid;
     grid-template-columns: 230px 1fr;
-    min-height: calc(100vh - 80px); /* let page grow */
+    min-height: calc(100vh - 80px);
     margin-top: 10px;
     background: var(--gn-bg);
-    overflow: visible; /* <-- NO cutting */
+    overflow: hidden;
 }
 
-/* SIDEBAR ------------------------------------------------------------- */
+/* =======================================================
+   SIDEBAR
+======================================================= */
 
 .gn-sidebar {
     background: var(--gn-sidebar-bg);
@@ -31,11 +35,11 @@
 }
 
 .gn-sidebar-title {
-    font-size: 0.9rem;
+    font-size: .9rem;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    opacity: 0.8;
-    margin-bottom: 8px;
+    letter-spacing: .16em;
+    opacity: .85;
+    margin-bottom: 10px;
 }
 
 #pageList {
@@ -44,86 +48,68 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-right: 4px;
 }
-
-/* Thumbnails */
 
 .gn-thumb {
     padding: 10px 8px;
-    border-radius: 9px;
-    background: rgba(242, 244, 243, 0.05);
+    border-radius: 8px;
+    background: rgba(242,244,243,0.07);
     cursor: pointer;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     border: 1px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    color: #F2F4F3;
 }
 
-    .gn-thumb span {
-        opacity: 0.9;
-    }
-
     .gn-thumb:hover {
-        background: rgba(242, 244, 243, 0.12);
-        border-color: rgba(242, 244, 243, 0.25);
+        background: rgba(255,255,255,0.15);
     }
 
 .gn-thumb-active {
-    background: #F2F4F3;
-    color: #0A0908;
-    font-weight: 600;
+    background: #ffffff;
+    color: #000000;
+    border-color: #ccc;
 }
 
-/* Add page button */
+/* Sidebar Buttons */
 
-.gn-add-page {
-    margin-top: 10px;
+.gn-add-page,
+.gn-delete-page {
+    margin-top: 8px;
     padding: 9px 10px;
     border-radius: 8px;
-    border: 1px dashed rgba(242, 244, 243, 0.55);
+    border: 1px dashed rgba(255,255,255,0.5);
     background: transparent;
     color: #F2F4F3;
     cursor: pointer;
     font-size: 0.85rem;
 }
 
-    .gn-add-page:hover {
-        background: rgba(242, 244, 243, 0.12);
-    }
-
-/* Delete Page */
-
-.gn-delete-page 
-{
-    margin-top: 8px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    border: 1px dashed rgba(250, 128, 114, 0.8);
-    background: transparent;
-    color: #f8b4ac;
-    cursor: pointer;
-    font-size: 0.85rem;
+.gn-delete-page {
+    border: 1px dashed salmon;
+    color: salmon;
 }
 
-    .gn-delete-page:hover 
-    {
-        background: rgba(250, 128, 114, 0.15);
+    .gn-add-page:hover,
+    .gn-delete-page:hover {
+        background: rgba(255,255,255,0.15);
     }
 
-
-/* MAIN AREA ----------------------------------------------------------- */
+/* =======================================================
+   MAIN
+======================================================= */
 
 .gn-main {
     position: relative;
-    background: radial-gradient(circle at top left, #A9927D20, #F2F4F3 60%);
     display: flex;
     align-items: center;
     justify-content: center;
+    background: radial-gradient(circle at top left, #A9927D20, #F2F4F3 60%);
 }
 
-/* TOOLBAR ------------------------------------------------------------- */
+/* =======================================================
+   TOOLBAR
+======================================================= */
 
 .gn-toolbar {
     position: absolute;
@@ -133,62 +119,48 @@
     background: var(--gn-toolbar-bg);
     padding: 8px 12px;
     border-radius: 999px;
-    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
     display: flex;
     align-items: center;
     gap: 6px;
-    z-index: 10;
+    z-index: 2000; /* Always above everything */
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
 }
 
 .gn-tool-btn {
     background: var(--gn-toolbar-accent);
-    border-radius: 999px;
     border: none;
-    color: #F2F4F3;
+    border-radius: 999px;
+    color: #ffffff;
     width: 34px;
     height: 34px;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    transition: 0.18s ease;
+    transition: .15s ease;
 }
 
     .gn-tool-btn:hover {
         background: var(--gn-toolbar-hover);
     }
 
-    .gn-tool-btn.gn-tool-active {
-        background: var(--gn-toolbar-accent-soft);
-        color: #0A0908;
-        font-weight: 700;
-    }
+.gn-tool-active {
+    background: var(--gn-toolbar-accent-soft) !important;
+    color: #0A0908 !important;
+}
 
 .divider {
     width: 1px;
     height: 26px;
-    background: rgba(242, 244, 243, 0.25);
-    margin: 0 4px;
+    background: rgba(255,255,255,0.3);
+    margin: 0 6px;
 }
-
-/* Brush size slider */
 
 #brushSize {
     accent-color: var(--gn-toolbar-accent-soft);
 }
 
-.gn-thickness-label {
-    color: #F2F4F3;
-    font-size: 0.8rem;
-    margin-right: 4px;
-}
-
-/* Color circles */
+/* Color picker */
 
 .gn-color-picker {
     display: flex;
-    align-items: center;
     gap: 4px;
 }
 
@@ -200,72 +172,78 @@
         cursor: pointer;
     }
 
-/* PAGE + CANVAS + TEXT PANEL ----------------------------------------- */
+/* =======================================================
+   PAGE + CANVAS + TEXTLAYER
+======================================================= */
 
 .gn-main-inner {
-    display: flex;
-    gap: 32px;
-    align-items: stretch;
-    justify-content: center;
-    width: 100%;
-    padding: 80px 80px 80px;
-    box-sizing: border-box;
+    padding: 80px;
 }
 
-/* Big page sheet */
 .gn-page {
-    flex: 0 0 auto;
-    width: 60vw; /* big like GoodNotes */
+    width: 60vw;
     max-width: 900px;
-    aspect-ratio: 3 / 4; /* tall sheet */
+    aspect-ratio: 3 / 4;
+    background: var(--gn-page-bg);
     border-radius: 24px;
-    box-shadow: 0 18px 55px rgba(0,0,0,0.25);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.25);
+    position: relative;
     overflow: hidden;
-    background-color: var(--gn-page-bg);
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    position: relative; /* IMPORTANT for absolute text box */
 }
 
-/* Canvas */
+/* Canvas under everything */
+
 #noteCanvas {
     width: 100%;
     height: 100%;
     display: block;
-    touch-action: none;
     background: transparent;
-}
-
-/* Text box INSIDE page */
-.gn-page-text {
+    touch-action: none;
     position: absolute;
-    top: 8%;
-    left: 8%;
-    right: 8%;
-    bottom: 8%;
-    border-radius: 10px;
-    border: 1px solid rgba(0,0,0,0.08);
-    padding: 10px 14px;
-    background: rgba(255,253,249,0.65);
-    resize: none;
-    outline: none;
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #111111;
-    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
-    .gn-page-text:focus {
-        border-color: #A9927D;
-        box-shadow: 0 0 0 2px rgba(169,146,125,0.25);
-        background: rgba(255,253,249,0.95);
-    }
+/* TEXT LAYER ALWAYS ABOVE CANVAS */
 
-/* Template backgrounds (MATCH TemplateId) */
+.gn-text-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* canvas passes through */
+    z-index: 3000;
+}
+
+/* =======================================================
+   TEXTBOXES
+======================================================= */
+
+.gn-textbox {
+    position: absolute;
+    min-width: 160px;
+    min-height: 40px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 10px;
+    resize: both;
+    overflow: auto;
+    cursor: move;
+    color: #0A0908;
+    font-size: 1rem;
+    pointer-events: auto;
+    z-index: 4000; /* ABOVE EVERYTHING */
+}
+
+/* =======================================================
+   PAGE BACKGROUNDS
+======================================================= */
 
 .page-template-lined {
-    background-image: repeating-linear-gradient(#fffdf9, #fffdf9 26px, #e0d6cc 27px);
+    background-image: repeating-linear-gradient(#fffdf9, #fffdf9 26px, #d9cec0 27px);
 }
 
 .page-template-dotted {
@@ -278,88 +256,31 @@
     background-size: 40px 40px;
 }
 
-.page-template-blank {
-    background-color: var(--gn-page-bg);
-}
-
-/* TEXT PANEL (right side – if you still use it) ----------------------- */
-
-.gn-text-panel {
-    flex: 0 0 320px;
-    max-width: 28%;
-    background: rgba(255,255,255,0.96);
-    border-radius: 18px;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.gn-text-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #5E503F;
-    margin: 0 0 4px;
-}
-
-.gn-textarea {
-    flex: 1;
-    border-radius: 12px;
-    border: 1px solid #ddd3c8;
-    padding: 8px 10px;
-    resize: vertical;
-    min-height: 200px;
-    font-size: 0.95rem;
-    outline: none;
-    background: #fffdf9;
-}
-
-    .gn-textarea:focus {
-        border-color: #A9927D;
-        box-shadow: 0 0 0 2px rgba(169,146,125,0.25);
-    }
-
-.gn-text-save {
-    align-self: flex-end;
-    margin-top: 4px;
-    border-radius: 999px;
-    border: none;
-    background: #49111C;
-    color: #ffffff;
-    padding: 6px 14px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-}
-
-    .gn-text-save:hover {
-        background: #5E503F;
-    }
-
-/* SAVE BUTTON --------------------------------------------------------- */
+/* =======================================================
+   SAVE BUTTON
+======================================================= */
 
 .gn-save-btn {
     position: absolute;
     bottom: 18px;
     right: 26px;
-    border-radius: 999px;
-    border: none;
     background: var(--gn-toolbar-accent);
-    color: #F2F4F3;
-    padding: 9px 18px;
-    font-size: 0.9rem;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 999px;
     cursor: pointer;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    z-index: 2000;
 }
 
     .gn-save-btn:hover {
         background: var(--gn-toolbar-hover);
     }
 
-/* RESPONSIVE ---------------------------------------------------------- */
+/* =======================================================
+   MOBILE
+======================================================= */
 
 @media (max-width: 900px) {
 
@@ -371,43 +292,12 @@
         display: none;
     }
 
-    .gn-toolbar {
-        top: 10px;
-        transform: translateX(-50%) scale(0.9);
-    }
-
-    .gn-main-inner {
-        flex-direction: column;
-        padding: 80px 16px 80px;
-        align-items: center;
-        gap: 16px;
-    }
-
     .gn-page {
         width: 94vw;
         max-width: 94vw;
     }
 
-    .gn-text-panel {
-        width: 100%;
-        max-width: 600px;
+    .gn-toolbar {
+        transform: translateX(-50%) scale(0.9);
     }
-    /* Text box INSIDE the page ------------------------------------------- */
-
-    .gn-page-text {
-        position: absolute;
-        top: 10%;
-        left: 8%;
-        right: 8%;
-        bottom: 10%;
-        border: none;
-        background: transparent;
-        resize: none;
-        outline: none;
-        font-size: 1rem;
-        line-height: 1.6;
-        color: #111111;
-        font-family: inherit;
-    }
-
 }

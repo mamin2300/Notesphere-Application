@@ -40,15 +40,15 @@
         <button class="gn-delete-page" onclick="deleteCurrentPage()">Delete Page</button>
     </div>
 
-    <!-- MAIN -->
+    <!-- MAIN AREA -->
     <div class="gn-main">
 
         <!-- TOOLBAR -->
         <div class="gn-toolbar">
-            <button type="button" onclick="selectTool('pen')" id="tool_pen" class="gn-tool-btn">✎</button>
-            <button type="button" onclick="selectTool('highlighter')" id="tool_highlighter" class="gn-tool-btn">🖍</button>
-            <button type="button" onclick="selectTool('eraser')" id="tool_eraser" class="gn-tool-btn">🩹</button>
-            <button type="button" onclick="selectTool('text')" id="tool_text" class="gn-tool-btn">T</button>
+            <button type="button" id="tool_pen" class="gn-tool-btn" onclick="selectTool('pen')">✎</button>
+            <button type="button" id="tool_highlighter" class="gn-tool-btn" onclick="selectTool('highlighter')">🖍</button>
+            <button type="button" id="tool_eraser" class="gn-tool-btn" onclick="selectTool('eraser')">🩹</button>
+            <button type="button" id="tool_text" class="gn-tool-btn" onclick="selectTool('text')">T</button>
 
             <span class="divider"></span>
 
@@ -71,14 +71,16 @@
             </div>
         </div>
 
-        <!-- PAGE -->
+        <!-- PAGE CONTAINER -->
         <div class="gn-main-inner">
             <div id="gn-page" class="gn-page @templateClass">
+
+                <!-- IMPORTANT ORDER: Canvas below, text layer above -->
                 <canvas id="noteCanvas"></canvas>
 
-                <textarea id="noteText"
-                          class="gn-page-text"
-                          placeholder="Type your note here...">@Model.Content</textarea>
+                <!-- FIXED TEXT LAYER -->
+                <div id="textLayer" class="gn-text-layer"></div>
+
             </div>
         </div>
 
@@ -87,6 +89,7 @@
 
 </div>
 
+<!-- Metadata for JS -->
 <div id="noteMeta"
      data-note-id="@Model.Id"
      data-pages-count="@pages.Count">

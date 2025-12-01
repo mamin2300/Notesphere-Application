@@ -177,6 +177,19 @@ namespace Notesphere.Services.NotesRepository
             _db.NoteVersions.Add(version);
             await _db.SaveChangesAsync();
         }
+        public async Task SavePage(int noteId, int pageNumber, string imageData, string textBoxes)
+        {
+            var page = await _db.NotePages
+                .FirstOrDefaultAsync(p => p.NoteId == noteId && p.PageNumber == pageNumber);
+
+            if (page == null) return;
+
+            page.ImageData = imageData;
+            page.TextBoxesJson = textBoxes;
+            page.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+        }
 
         public async Task<List<NoteVersion>> GetVersionsForNoteAsync(int noteId)
         {
