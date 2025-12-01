@@ -48,7 +48,7 @@
      <!-- =============================
                  MAIN WRAPPER 
           ============================= -->
-<div id="appWrapper" class="ns-app-wrapper">
+<div id="appWrapper" class="ns-content">
 
     <main class="ns-main">
 
@@ -57,7 +57,7 @@
 
             <!-- Hamburger button -->
 
-            <div class="ns-header-block">
+            <div class="ns-hero">
                 <h1 class="ns-page-title">Today</h1>
                 <p class="ns-page-subtitle">
                     @Model.Today.ToString("dddd, MMM dd") ·
@@ -65,6 +65,13 @@
                     @Model.FavoriteNotesCount favorite(s)
                 </p>
             </div>
+
+            <div class="ns-stat-row">
+                <div class="ns-stat-box">Notes <span>@Model.TotalNotes</span></div>
+                <div class="ns-stat-box">Favorites <span>@Model.FavoriteNotesCount</span></div>
+                <div class="ns-stat-box">Reminders <span>@Model.Reminders.Count()</span></div>
+            </div>
+
 
             <div class="ns-topbar-right">
                 @if (User.Identity?.IsAuthenticated ?? false)
