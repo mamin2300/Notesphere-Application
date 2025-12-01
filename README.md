@@ -3,14 +3,10 @@
 
 Final Project: (PROG30000)
 
-
-
-
 ### Project Overview
 Notesphere is a web-based application designed to help users organize and manage their notes efficiently.
 The application allows users to create, edit, delete, and categorize notes, making it easier to keep track of important information.
 With a user-friendly interface and robust features, Notesphere aims to enhance productivity and streamline note-taking processes.
-
 
 ### 🛠 System Tools
  - Daily Dashboard
@@ -36,8 +32,6 @@ Domain Layer
 (Notesphere.Entities)
  - Domain models
  - Shared core business objects
-
-
 
 
 ### Features 
