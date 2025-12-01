@@ -1,14 +1,4 @@
-﻿/* =====================================================
-      GOODNOTES FIXED EDITOR SCRIPT
-      Fixed:
-      ✓ Textboxes not editable
-      ✓ Textboxes stuck behind canvas
-      ✓ Text tool not switching
-      ✓ Page load issues
-      ✓ Save issues
-===================================================== */
-
-/* =============== GLOBALS =============== */
+﻿/* GLOBALS */
 let canvas, ctx;
 let isDrawing = false;
 let lastX = 0, lastY = 0;
@@ -22,10 +12,9 @@ let currentPage = 1;
 let undoStack = [];
 let redoStack = [];
 
-/* =======================================
-   INITIALIZE
-======================================= */
-document.addEventListener("DOMContentLoaded", () => {
+/* INITIALIZE */
+document.addEventListener("DOMContentLoaded", () =>
+{
 
     const meta = document.getElementById("noteMeta");
     NOTE_ID = parseInt(meta.dataset.noteId);
@@ -41,10 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initPages();
 });
 
-/* =======================================
-   CANVAS SIZE
-======================================= */
-function setupCanvasSize() {
+/* CANVAS SIZE */
+function setupCanvasSize()
+{
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
@@ -58,17 +46,16 @@ function setupCanvasSize() {
     restoreImageForResize();
 }
 
-/* FIX: When resizing window, keep drawing visible */
-function restoreImageForResize() {
+function restoreImageForResize()
+{
     if (undoStack.length > 0) {
         restoreImage(undoStack[undoStack.length - 1]);
     }
 }
 
-/* =======================================
-   TOOLBAR
-======================================= */
-function initToolbar() {
+/* TOOLBAR */
+function initToolbar()
+{
     document.getElementById("tool_pen").onclick = () => selectTool("pen");
     document.getElementById("tool_highlighter").onclick = () => selectTool("highlighter");
     document.getElementById("tool_eraser").onclick = () => selectTool("eraser");
@@ -77,7 +64,8 @@ function initToolbar() {
     selectTool("pen");
 }
 
-function selectTool(tool) {
+function selectTool(tool)
+{
     currentTool = tool;
 
     document.querySelectorAll(".gn-tool-btn").forEach(btn =>
@@ -87,22 +75,23 @@ function selectTool(tool) {
     document.getElementById("tool_" + tool).classList.add("gn-tool-active");
 }
 
-/* =======================================
-   CANVAS EVENTS
-======================================= */
-function initCanvasEvents() {
+/* CANVAS EVENTS */
+function initCanvasEvents()
+{
     canvas.addEventListener("pointerdown", onPointerDown);
     canvas.addEventListener("pointermove", onPointerMove);
     canvas.addEventListener("pointerup", () => isDrawing = false);
     canvas.addEventListener("pointerleave", () => isDrawing = false);
 }
 
-function onPointerDown(e) {
+function onPointerDown(e)
+{
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    if (currentTool === "text") {
+    if (currentTool === "text")
+    {
         createTextBox(x, y);
         return;
     }
@@ -114,7 +103,8 @@ function onPointerDown(e) {
     saveState();
 }
 
-function onPointerMove(e) {
+function onPointerMove(e)
+{
     if (!isDrawing || currentTool === "text") return;
 
     const rect = canvas.getBoundingClientRect();
@@ -127,21 +117,24 @@ function onPointerMove(e) {
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(x, y);
 
-    if (currentTool === "pen") {
+    if (currentTool === "pen")
+    {
         ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = 1.0;
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = size;
     }
 
-    if (currentTool === "highlighter") {
+    if (currentTool === "highlighter")
+    {
         ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = 0.3;
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = size * 2;
     }
 
-    if (currentTool === "eraser") {
+    if (currentTool === "eraser")
+    {
         ctx.globalCompositeOperation = "destination-out";
         ctx.globalAlpha = 1.0;
         ctx.lineWidth = size * 2;
@@ -152,10 +145,9 @@ function onPointerMove(e) {
     lastY = y;
 }
 
-/* =======================================
-   TEXT BOXES
-======================================= */
-function createTextBox(x, y) {
+/* TEXT BOXES */
+function createTextBox(x, y)
+{
     const box = document.createElement("div");
     box.className = "gn-textbox";
     box.contentEditable = true;
@@ -173,11 +165,13 @@ function createTextBox(x, y) {
     box.focus();
 }
 
-function enableDrag(box) {
+function enableDrag(box)
+{
     let isDown = false;
     let offsetX = 0, offsetY = 0;
 
-    box.addEventListener("mousedown", (e) => {
+    box.addEventListener("mousedown", (e) =>
+    {
         isDown = true;
         offsetX = e.clientX - box.offsetLeft;
         offsetY = e.clientY - box.offsetTop;
@@ -186,32 +180,36 @@ function enableDrag(box) {
 
     document.addEventListener("mouseup", () => isDown = false);
 
-    document.addEventListener("mousemove", (e) => {
+    document.addEventListener("mousemove", (e) =>
+    {
         if (!isDown) return;
         box.style.left = (e.clientX - offsetX) + "px";
         box.style.top = (e.clientY - offsetY) + "px";
     });
 }
 
-/* =======================================
-   PAGE HANDLING
-======================================= */
-function initPages() {
+/* PAGE HANDLING */
+function initPages()
+{
     const thumbs = document.querySelectorAll(".gn-thumb");
-    if (thumbs.length > 0) {
+    if (thumbs.length > 0)
+    {
         loadPage(parseInt(thumbs[0].dataset.page));
     }
 }
 
-function highlightPage() {
-    document.querySelectorAll(".gn-thumb").forEach(t => {
+function highlightPage()
+{
+    document.querySelectorAll(".gn-thumb").forEach(t =>
+    {
         t.classList.remove("gn-thumb-active");
     });
     document.querySelector(`.gn-thumb[data-page='${currentPage}']`)
         ?.classList.add("gn-thumb-active");
 }
 
-function loadPage(pageNumber) {
+function loadPage(pageNumber)
+{
 
     currentPage = pageNumber;
     highlightPage();
@@ -222,7 +220,8 @@ function loadPage(pageNumber) {
 
     const thumb = document.querySelector(`.gn-thumb[data-page="${pageNumber}"]`);
 
-    if (thumb && thumb.dataset.image && thumb.dataset.image !== "") {
+    if (thumb && thumb.dataset.image && thumb.dataset.image !== "")
+    {
         restoreImage(thumb.dataset.image);
     }
 
@@ -232,29 +231,32 @@ function loadPage(pageNumber) {
 }
 
 /* Restore image */
-function restoreImage(dataUrl) {
+function restoreImage(dataUrl)
+{
     const img = new Image();
-    img.onload = () => {
+    img.onload = () =>
+    {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
     img.src = dataUrl;
 }
 
-/* =======================================
-   ADD PAGE
-======================================= */
-function addNewPage() {
+/*  ADD PAGE */
+function addNewPage()
+{
     const formData = new URLSearchParams();
     formData.append("noteId", NOTE_ID);
 
-    fetch("/Notes/AddPage", {
+    fetch("/Notes/AddPage",
+        {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     })
         .then(r => r.json())
-        .then(data => {
+        .then(data =>
+        {
             const num = data.pageNumber;
 
             const div = document.createElement("div");
@@ -273,22 +275,23 @@ function addNewPage() {
         });
 }
 
-/* =======================================
-   DELETE PAGE
-======================================= */
-function deleteCurrentPage() {
+/* DELETE PAGE */
+function deleteCurrentPage()
+{
     if (!confirm("Delete this page?")) return;
 
     const formData = new URLSearchParams();
     formData.append("noteId", NOTE_ID);
     formData.append("pageNumber", currentPage);
 
-    fetch("/Notes/DeletePage", {
+    fetch("/Notes/DeletePage",
+        {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     })
-        .then(() => {
+        .then(() =>
+        {
             document.querySelector(`.gn-thumb[data-page="${currentPage}"]`)?.remove();
 
             const thumbs = document.querySelectorAll(".gn-thumb");
@@ -301,15 +304,15 @@ function deleteCurrentPage() {
         });
 }
 
-/* =======================================
-   SAVE PAGE
-======================================= */
-function saveCurrentPage() {
+/* SAVE PAGE */
+function saveCurrentPage()
+{
 
     const imageData = canvas.toDataURL("image/png");
 
     let textData = [];
-    document.querySelectorAll(".gn-textbox").forEach(b => {
+    document.querySelectorAll(".gn-textbox").forEach(b =>
+    {
         textData.push({
             x: parseInt(b.style.left),
             y: parseInt(b.style.top),
@@ -325,12 +328,14 @@ function saveCurrentPage() {
     formData.append("imageData", imageData);
     formData.append("textBoxes", JSON.stringify(textData));
 
-    fetch("/Notes/SavePage", {
+    fetch("/Notes/SavePage",
+        {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     })
-        .then(() => {
+        .then(() =>
+        {
             const thumb = document.querySelector(`.gn-thumb[data-page="${currentPage}"]`);
             if (thumb) thumb.dataset.image = imageData;
 
@@ -340,22 +345,23 @@ function saveCurrentPage() {
         });
 }
 
-/* =======================================
-   UNDO / REDO
-======================================= */
-function saveState() {
+/* UNDO / REDO */
+function saveState()
+{
     undoStack.push(canvas.toDataURL());
     if (undoStack.length > 50) undoStack.shift();
 }
 
-function undoCanvas() {
+function undoCanvas()
+{
     if (undoStack.length <= 1) return;
 
     redoStack.push(undoStack.pop());
     restoreImage(undoStack[undoStack.length - 1]);
 }
 
-function redoCanvas() {
+function redoCanvas()
+{
     if (redoStack.length === 0) return;
 
     const img = redoStack.pop();

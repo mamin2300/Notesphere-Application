@@ -6,7 +6,8 @@ const lockBtn = document.getElementById("lockSidebarBtn");
 const burger = document.getElementById("hamburgerBtn");
 
 // Click burger → lock/unlock sidebar
-burger.addEventListener("click", () => {
+burger.addEventListener("click", () =>
+{
     locked = !locked;
 
     if (locked) {

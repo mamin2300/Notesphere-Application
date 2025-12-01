@@ -9,7 +9,6 @@
 <div class="ns-note-create">
     <h1 class="ns-note-create-title">Create a new note</h1>
 
-    <!-- hidden summary – JS will show a dialog if there are errors -->
     <div asp-validation-summary="ModelOnly"
          class="text-danger d-none"
          id="validationSummary"></div>
@@ -72,7 +71,8 @@
     </form>
 </div>
 
-@section Scripts {
+@section Scripts 
+{
     <partial name="_ValidationScriptsPartial" />
     <script>
         // If server-side validation failed, show a dialog instead of inline text

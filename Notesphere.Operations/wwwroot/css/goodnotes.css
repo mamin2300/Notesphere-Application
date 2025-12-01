@@ -1,4 +1,5 @@
-﻿:root {
+﻿:root 
+{
     --gn-bg: #F2F4F3;
     --gn-sidebar-bg: #0A0908;
     --gn-toolbar-bg: #0A0908;
@@ -8,11 +9,10 @@
     --gn-page-bg: #fffdf9;
 }
 
-/* =======================================================
-   EDITOR LAYOUT
-======================================================= */
+/* EDITOR LAYOUT */
 
-.gn-editor-wrapper {
+.gn-editor-wrapper 
+{
     display: grid;
     grid-template-columns: 230px 1fr;
     min-height: calc(100vh - 80px);
@@ -21,11 +21,10 @@
     overflow: hidden;
 }
 
-/* =======================================================
-   SIDEBAR
-======================================================= */
+/* SIDEBAR */
 
-.gn-sidebar {
+.gn-sidebar 
+{
     background: var(--gn-sidebar-bg);
     color: #F2F4F3;
     padding: 18px 14px;
@@ -34,7 +33,8 @@
     gap: 10px;
 }
 
-.gn-sidebar-title {
+.gn-sidebar-title 
+{
     font-size: .9rem;
     text-transform: uppercase;
     letter-spacing: .16em;
@@ -42,7 +42,8 @@
     margin-bottom: 10px;
 }
 
-#pageList {
+#pageList 
+{
     flex: 1;
     overflow-y: auto;
     display: flex;
@@ -50,7 +51,8 @@
     gap: 8px;
 }
 
-.gn-thumb {
+.gn-thumb 
+{
     padding: 10px 8px;
     border-radius: 8px;
     background: rgba(242,244,243,0.07);
@@ -61,11 +63,13 @@
     color: #F2F4F3;
 }
 
-    .gn-thumb:hover {
+    .gn-thumb:hover 
+    {
         background: rgba(255,255,255,0.15);
     }
 
-.gn-thumb-active {
+.gn-thumb-active 
+{
     background: #ffffff;
     color: #000000;
     border-color: #ccc;
@@ -74,7 +78,8 @@
 /* Sidebar Buttons */
 
 .gn-add-page,
-.gn-delete-page {
+.gn-delete-page 
+{
     margin-top: 8px;
     padding: 9px 10px;
     border-radius: 8px;
@@ -85,21 +90,22 @@
     font-size: 0.85rem;
 }
 
-.gn-delete-page {
+.gn-delete-page 
+{
     border: 1px dashed salmon;
     color: salmon;
 }
 
     .gn-add-page:hover,
-    .gn-delete-page:hover {
+    .gn-delete-page:hover 
+    {
         background: rgba(255,255,255,0.15);
     }
 
-/* =======================================================
-   MAIN
-======================================================= */
+/* MAIN */
 
-.gn-main {
+.gn-main 
+{
     position: relative;
     display: flex;
     align-items: center;
@@ -107,11 +113,10 @@
     background: radial-gradient(circle at top left, #A9927D20, #F2F4F3 60%);
 }
 
-/* =======================================================
-   TOOLBAR
-======================================================= */
+/* TOOLBAR */
 
-.gn-toolbar {
+.gn-toolbar 
+{
     position: absolute;
     top: 18px;
     left: 50%;
@@ -122,11 +127,12 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    z-index: 2000; /* Always above everything */
+    z-index: 2000; 
     box-shadow: 0 12px 30px rgba(0,0,0,0.35);
 }
 
-.gn-tool-btn {
+.gn-tool-btn 
+{
     background: var(--gn-toolbar-accent);
     border: none;
     border-radius: 999px;
@@ -137,34 +143,40 @@
     transition: .15s ease;
 }
 
-    .gn-tool-btn:hover {
+    .gn-tool-btn:hover 
+    {
         background: var(--gn-toolbar-hover);
     }
 
-.gn-tool-active {
+.gn-tool-active 
+{
     background: var(--gn-toolbar-accent-soft) !important;
     color: #0A0908 !important;
 }
 
-.divider {
+.divider 
+{
     width: 1px;
     height: 26px;
     background: rgba(255,255,255,0.3);
     margin: 0 6px;
 }
 
-#brushSize {
+#brushSize 
+{
     accent-color: var(--gn-toolbar-accent-soft);
 }
 
 /* Color picker */
 
-.gn-color-picker {
+.gn-color-picker 
+{
     display: flex;
     gap: 4px;
 }
 
-    .gn-color-picker .color {
+    .gn-color-picker .color 
+    {
         width: 18px;
         height: 18px;
         border-radius: 50%;
@@ -172,15 +184,15 @@
         cursor: pointer;
     }
 
-/* =======================================================
-   PAGE + CANVAS + TEXTLAYER
-======================================================= */
+/* PAGE + CANVAS */
 
-.gn-main-inner {
+.gn-main-inner 
+{
     padding: 80px;
 }
 
-.gn-page {
+.gn-page 
+{
     width: 60vw;
     max-width: 900px;
     aspect-ratio: 3 / 4;
@@ -191,9 +203,8 @@
     overflow: hidden;
 }
 
-/* Canvas under everything */
-
-#noteCanvas {
+#noteCanvas 
+{
     width: 100%;
     height: 100%;
     display: block;
@@ -205,23 +216,21 @@
     z-index: 1;
 }
 
-/* TEXT LAYER ALWAYS ABOVE CANVAS */
-
-.gn-text-layer {
+.gn-text-layer 
+{
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* canvas passes through */
+    pointer-events: none; 
     z-index: 3000;
 }
 
-/* =======================================================
-   TEXTBOXES
-======================================================= */
+/* TEXTBOXES */
 
-.gn-textbox {
+.gn-textbox 
+{
     position: absolute;
     min-width: 160px;
     min-height: 40px;
@@ -238,29 +247,29 @@
     z-index: 4000; /* ABOVE EVERYTHING */
 }
 
-/* =======================================================
-   PAGE BACKGROUNDS
-======================================================= */
+/* PAGE BACKGROUNDS */
 
-.page-template-lined {
+.page-template-lined 
+{
     background-image: repeating-linear-gradient(#fffdf9, #fffdf9 26px, #d9cec0 27px);
 }
 
-.page-template-dotted {
+.page-template-dotted 
+{
     background-image: radial-gradient(#c0b2a5 1px, transparent 1px);
     background-size: 12px 12px;
 }
 
-.page-template-boxed {
+.page-template-boxed 
+{
     background-image: linear-gradient(#e0d6cc 1px, transparent 1px), linear-gradient(90deg, #e0d6cc 1px, transparent 1px);
     background-size: 40px 40px;
 }
 
-/* =======================================================
-   SAVE BUTTON
-======================================================= */
+/* SAVE BUTTON */
 
-.gn-save-btn {
+.gn-save-btn 
+{
     position: absolute;
     bottom: 18px;
     right: 26px;
@@ -274,30 +283,34 @@
     z-index: 2000;
 }
 
-    .gn-save-btn:hover {
+    .gn-save-btn:hover 
+    {
         background: var(--gn-toolbar-hover);
     }
 
-/* =======================================================
-   MOBILE
-======================================================= */
+/* MOBILE */
 
-@media (max-width: 900px) {
+@media (max-width: 900px) 
+{
 
-    .gn-editor-wrapper {
+    .gn-editor-wrapper 
+    {
         grid-template-columns: 1fr;
     }
 
-    .gn-sidebar {
+    .gn-sidebar 
+    {
         display: none;
     }
 
-    .gn-page {
+    .gn-page 
+    {
         width: 94vw;
         max-width: 94vw;
     }
 
-    .gn-toolbar {
+    .gn-toolbar 
+    {
         transform: translateX(-50%) scale(0.9);
     }
 }

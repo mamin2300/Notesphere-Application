@@ -8,9 +8,9 @@ using Notesphere.Services.NotesRepository;
 
 namespace Notesphere.Operations.Controllers
 {
-    /// Handles CRUD operations for notes and integrates with the
-    /// drawing notebook editor (multi-page canvas + text).
-    /// Author: Mamin Khan
+    // Handles CRUD operations for notes and integrates with the
+    // drawing notebook editor (multi-page canvas + text).
+    // Author: Mamin Khan
     [Authorize]
     public class NotesController : Controller
     {

@@ -1,4 +1,5 @@
-﻿:root {
+﻿:root 
+{
     --ns-bg: #f2f4f3;
     --ns-sidebar-bg: #0a0908;
     --ns-accent: #49111c;
@@ -10,12 +11,14 @@
 }
 
 /* Page background */
-body {
+body 
+{
     background-color: var(--ns-bg);
 }
 
 /* Wrapper for the create note page */
-.ns-note-create {
+.ns-note-create 
+{
     max-width: 900px;
     margin: 40px auto 60px;
     padding: 32px 40px;
@@ -25,29 +28,32 @@ body {
 }
 
 /* Page title */
-.ns-note-create-title {
+.ns-note-create-title 
+{
     font-size: 2rem;
     font-weight: 600;
     color: var(--ns-text-main);
     margin-bottom: 24px;
 }
 
-/* Generic form row */
-.ns-owner-row {
+.ns-owner-row 
+{
     display: flex;
     flex-direction: column;
     gap: 6px;
     margin-bottom: 18px;
 }
 
-.ns-label {
+.ns-label 
+{
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--ns-text-muted);
 }
 
 /* Inputs */
-.ns-input {
+.ns-input 
+{
     border-radius: 12px;
     border: 1px solid #ddd3c8;
     padding: 10px 12px;
@@ -55,21 +61,23 @@ body {
     outline: none;
 }
 
-    .ns-input:focus {
+    .ns-input:focus 
+    {
         border-color: var(--ns-accent-soft);
         box-shadow: 0 0 0 2px rgba(169, 146, 125, 0.25);
     }
 
-/* Template picker ---------------------------------------------------- */
+/* Template picker */
 
-.ns-template-grid {
+.ns-template-grid 
+{
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
 }
 
-/* tall page-like preview */
-.ns-template-card {
+.ns-template-card 
+{
     position: relative;
     border-radius: 14px;
     padding: 10px;
@@ -84,44 +92,51 @@ body {
     justify-content: flex-end;
 }
 
-    .ns-template-card input {
+    .ns-template-card input 
+    {
         position: absolute;
         top: 8px;
         left: 8px;
     }
 
-.ns-template-name {
+.ns-template-name 
+{
     font-size: 0.8rem;
     font-weight: 500;
     margin-top: 4px;
 }
 
 .ns-template-card-selected,
-.ns-template-card input:checked + .ns-template-name {
+.ns-template-card input:checked + .ns-template-name 
+{
     border-color: #7b1020;
     box-shadow: 0 0 0 2px rgba(123,16,32,0.2);
 }
 
-/* Visual preview styles for the cards */
-.template-card-lined {
+/* styles for the cards */
+.template-card-lined 
+{
     background-image: repeating-linear-gradient(#fdfaf5, #fdfaf5 26px, #e5dfd5 27px);
     background-size: 100% 27px;
 }
 
-.template-card-dotted {
+.template-card-dotted 
+{
     background-image: radial-gradient(#c4b5a5 1px, transparent 1px);
     background-size: 12px 12px;
     background-color: #fdfaf5;
 }
 
-.template-card-boxed {
+.template-card-boxed 
+{
     background-image: linear-gradient(#e2dcd5 1px, transparent 1px), linear-gradient(90deg, #e2dcd5 1px, transparent 1px);
     background-size: 30px 30px;
     background-color: #fdfaf5;
 }
 
-/* Favorite checkbox row */
-.ns-checkbox {
+/* checkbox row */
+.ns-checkbox 
+{
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -130,14 +145,16 @@ body {
 }
 
 /* Buttons row */
-.ns-actions-row {
+.ns-actions-row 
+{
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
 /* Primary button */
-.ns-btn-primary {
+.ns-btn-primary 
+{
     border: none;
     border-radius: 999px;
     padding: 8px 20px;
@@ -149,14 +166,16 @@ body {
     transition: background 0.18s ease, transform 0.1s ease, box-shadow 0.18s ease;
 }
 
-    .ns-btn-primary:hover {
+    .ns-btn-primary:hover 
+    {
         background: var(--ns-accent-dark);
         transform: translateY(-1px);
         box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
     }
 
 /* Secondary text link */
-.ns-btn-link {
+.ns-btn-link 
+{
     border: none;
     background: transparent;
     color: var(--ns-accent);
@@ -165,26 +184,30 @@ body {
     cursor: pointer;
 }
 
-    .ns-btn-link:hover {
+    .ns-btn-link:hover 
+    {
         text-decoration: underline;
     }
 
 /* Validation styling */
 .text-danger,
-.validation-summary-errors {
+.validation-summary-errors 
+{
     font-size: 0.85rem;
     color: #c0392b;
     margin-top: 4px;
 }
 
 /* Small-screen tweaks */
-@media (max-width: 900px) {
+@media (max-width: 900px) 
+{
     .ns-note-create {
         margin: 20px 12px 40px;
         padding: 24px 18px;
     }
 
-    .ns-note-create-title {
+    .ns-note-create-title 
+    {
         font-size: 1.6rem;
     }
 }

@@ -1,10 +1,12 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () =>
+{
 
     const input = document.getElementById("todoInput");
     const addBtn = document.getElementById("addTodoBtn");
     const list = document.getElementById("todoList");
 
-    function addTodo() {
+    function addTodo()
+    {
         const text = input.value.trim();
         if (text === "") return;
 
@@ -25,16 +27,20 @@
 
     addBtn.addEventListener("click", addTodo);
 
-    input.addEventListener("keypress", (e) => {
+    input.addEventListener("keypress", (e) =>
+    {
         if (e.key === "Enter") addTodo();
     });
 
-    list.addEventListener("click", (e) => {
-        if (e.target.classList.contains("todo-delete")) {
+    list.addEventListener("click", (e) =>
+    {
+        if (e.target.classList.contains("todo-delete"))
+        {
             e.target.parentElement.remove();
         }
 
-        if (e.target.classList.contains("todo-checkbox")) {
+        if (e.target.classList.contains("todo-checkbox"))
+        {
             const label = e.target.nextElementSibling;
             label.classList.toggle("todo-checked");
         }
