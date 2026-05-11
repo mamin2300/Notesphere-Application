@@ -70,8 +70,6 @@ Collaborative academic project — Sheridan College, Fall 2025.
 | Mamin | Team Member |
 | Malika Muskan | Planner Module |
 | Talha | Team Member |
-| [Name] | Team Member |
+| Saad | Team Member |
 
----
 
-*Built with care and a lot of coffee ☕*
